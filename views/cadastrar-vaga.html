@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Everymind - Candidato</title>
+    <link rel="stylesheet" href="../styles/candidato.css">
+    <link rel="stylesheet" href="../styles/cadastrar-vaga.css">
+    <link rel="icon" href="everymind-removebg-preview.png" type="image/png">
+</head>
+
+<body>
+    <div id="menu">
+        <div class="hamburger">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+        <div class="menu-inner">
+            <ul>
+                <li><a href="/perfil">Perfil</a></li>
+                <li><a href="/cadastrar-vaga">Cadastrar Vaga</a></li>
+                <li><a href="/vagas-cadastradas">Vagas Cadastradas</a></li>
+                <li><a href="/entrevistas">Entrevistas</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="content">
+        <div class="container">
+            <h2>Cadastro de Vaga</h2>
+            <form action="/cadastrar-vaga" method="POST">
+                <div class="txt_field">
+                    <label for="titulo">Título da Vaga:</label>
+                    <input type="text" id="titulo" name="titulo" required>
+                </div>
+                <div class="txt_field">
+                    <label for="descricao">Descrição:</label>
+                    <textarea id="descricao" name="descricao" required></textarea>
+                </div>
+                <div class="txt_field">
+                    <label for="salario">Salário:</label>
+                    <input type="text" id="salario" name="salario">
+                </div>
+                <div class="txt_field">
+                    <label for="vulnerabilidade">Vulnerabilidade:</label>
+                    <select id="vulnerabilidade" name="vulnerabilidade">
+                        <option value="Selecione uma Opção">Selecione uma Opção</option>
+                        <option value="LGBTQIA+">LGBTQIA+</option>
+                        <option value="Baixa Renda">Baixa Renda</option>
+                        <option value="Mulher">Mulher</option>
+                        <option value="PCD">PCD</option>
+                        <option value="Negro(a)">Negro(a)</option>
+                    </select>
+                </div>
+                <div class="txt_field">
+                    <label for="tipo-trabalho">Tipo de Trabalho:</label>
+                    <select id="tipo_trabalho" name="tipo_trabalho">
+                        <option value="Selecione uma Opção">Selecione uma Opção</option>
+                        <option value="Home Office">Home Office</option>
+                        <option value="Híbrido">Híbrido</option>
+                        <option value="Presencial">Presencial</option>
+                    </select>
+                </div>
+                <div class="txt_field">
+                    <label for="localizacao">Localização:</label>
+                    <input type="text" id="localizacao" name="localizacao">
+                </div>
+             
+                <input type="submit" value="Cadastrar Vaga">
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+            var menuExpanded = false;
+            var hamburger = $('.hamburger');
+
+            $('.hamburger, .menu-inner').on('mouseenter', function () {
+                $(this).parent().addClass('expanded');
+                menuExpanded = true;
+            });
+
+            $('.menu-inner').on('mouseleave', function () {
+                menuExpanded = false;
+                $(this).parent().removeClass('expanded');
+            });
+
+            function svgCurve() {
+                if (menuExpanded) {
+                    // Lógica para expandir o menu
+                } else {
+                    // Lógica para contrair o menu
+                }
+
+                // Outras lógicas conforme necessário
+
+                window.requestAnimationFrame(svgCurve);
+            }
+
+
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #e2efe6;
+}
+
+.container {
+    text-align: center;
+    width: 800px; /* Largura fixa desejada para o formulário */
+    padding: 2%;
+    margin-right: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    font-size: 24px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: black;
+}
+
+form {
+    text-align: left;
+}
+
+.txt_field {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+input, textarea, select {
+    width: 100%; /* O elemento ocupa 100% da largura do contêiner */
+    padding: 10px;
+    background: #f1f1f1;
+    border: none;
+    outline: none;
+}
+
+input[type="submit"] {
+    background: #00a7b6;
+    color: #fff;
+    cursor: pointer;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.hamburger {
+    right: 20px;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    margin: 0 auto; /* Centraliza o ícone horizontalmente */
+}
+
+.hamburger .line {
+    width: 100%;
+    height: 4px;
+    background-color: #fff;
+    position: absolute;
+}

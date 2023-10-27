@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Everymind - Cadastro</title>
+    <link rel="stylesheet" href="../styles/cadastro.css">
+    <link rel="icon" href="everymind-removebg-preview.png" type="image/png">
+</head>
+
+<body>
+    <div class="center">
+        <h1>Cadastro</h1>
+        <form id="cadastro-form" method="post">
+            <div class="txt_field">
+                <input type="text" name="nomeCompleto" required placeholder="Nome Completo">
+            </div>
+            <div class="txt_field">
+                <input type="text" name="telefone" required placeholder="Telefone">
+            </div>
+            <div class="txt_field">
+                <input type="text" name="cpf" required placeholder="CPF">
+            </div>
+            <div class="txt_field">
+                <input type="text" name="vulnerabilidade" required placeholder="Vulnerabilidade">
+            </div>
+            <div class="txt_field">
+                <input type="email" name="email" required placeholder="E-mail">
+            </div>
+            <div class="txt_field">
+                <input type="password" name="senha" required placeholder="Senha">
+            </div>
+            <input type="submit" value="Cadastrar">
+            <div class="signup_link">
+                Já possui cadastro? <a href="/login">Faça login</a>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    const form = document.querySelector('cadastro-form');
+
+    app.use(bodyParser.urlencoded({ extended: true }));
+    form.addEventListener('submit', function (e) {
+        const nomeCompleto = document.getElementById('nomeCompleto');
+        const telefone = document.getElementById('telefone');
+        const cpf = document.getElementById('cpf');
+        const vulnerabilidade = document.getElementById('vulnerabilidade');
+        const email = document.getElementById('email');
+        const senha = document.getElementById('senha');
+        let isValid = true;
+
+        if (!nomeCompleto.value.trim()) {
+            isValid = false;
+        }
+
+        if (!telefone.value.match(/^\d+$/)) {
+            isValid = false;
+        }
+
+        if (!cpf.value.match(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)) {
+            isValid = false;
+        }
+
+        if (!vulnerabilidade.value.trim()) {
+            isValid = false;
+        }
+
+        if (!email.value.trim()) {
+            isValid = false;
+        }
+
+        if (!senha.value.trim()) {
+            isValid = false;
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+
+   
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault(); // Impede o envio padrão do formulário
+
+        // Coletar os dados do formulário
+        const nomeCompleto = document.querySelector('input[name="nomeCompleto"]').value;
+        const telefone = document.querySelector('input[name="telefone"]').value;
+        const cpf = document.querySelector('input[name="cpf"]').value;
+        const vulnerabilidade = document.querySelector('input[name="vulnerabilidade"]').value;
+        const email = document.querySelector('input[name="email"]').value;
+        const senha = document.querySelector('input[name="senha"]').value;
+
+        // Enviar os dados para o servidor via AJAX (usando fetch ou outra biblioteca)
+        fetch('/cadastro', {
+            method: 'POST',
+            body: JSON.stringify({
+                nomeCompleto,
+                telefone,
+                cpf,
+                vulnerabilidade,
+                email,
+                senha,
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => response.text())
+            .then((message) => {
+                alert(message); // Exiba uma mensagem de sucesso ou erro
+                form.reset(); // Limpe o formulário após o envio bem-sucedido
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    });
+
+
+
+
+
+</script>
+
+</html>
