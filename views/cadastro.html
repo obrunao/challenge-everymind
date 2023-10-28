@@ -22,8 +22,18 @@
                 <input type="text" name="cpf" required placeholder="CPF">
             </div>
             <div class="txt_field">
+<<<<<<< HEAD
+                <select name="localizacao" required>
+                    <option value="">Selecione um Estado</option>
+                </select>
+            </div>
+            <div class="txt_field">
+                <select id="vulnerabilidade" name="vulnerabilidade" required>
+                    <option value="Selecione uma Opção">Selecione sua vulnerabilidade</option>
+=======
                 <select id="vulnerabilidade" name="vulnerabilidade" required>
                     <option value="Selecione uma Opção">Selecione sua Vulnerabilidade</option>
+>>>>>>> a9d02d0ecef8610c94798221d8b5979f85191521
                     <option value="LGBTQIA+">LGBTQIA+</option>
                     <option value="Baixa Renda">Baixa Renda</option>
                     <option value="Mulher">Mulher</option>
@@ -45,89 +55,72 @@
     </div>
 </body>
 <script>
-    const form = document.querySelector('cadastro-form');
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('#cadastro-form');
+        const localizacaoSelect = document.querySelector('select[name="localizacao"]');
 
-    app.use(bodyParser.urlencoded({ extended: true }));
-    form.addEventListener('submit', function (e) {
-        const nomeCompleto = document.getElementById('nomeCompleto');
-        const telefone = document.getElementById('telefone');
-        const cpf = document.getElementById('cpf');
-        const vulnerabilidade = document.getElementById('vulnerabilidade');
-        const email = document.getElementById('email');
-        const senha = document.getElementById('senha');
-        let isValid = true;
+        form.addEventListener('submit', function (e) {
+            e.preventDefault(); // Impede o envio padrão do formulário
 
-        if (!nomeCompleto.value.trim()) {
-            isValid = false;
-        }
+            const nomeCompleto = document.querySelector('input[name="nomeCompleto"]').value;
+            const telefone = document.querySelector('input[name="telefone"]').value;
+            const cpf = document.querySelector('input[name="cpf"]').value;
+            const vulnerabilidade = document.querySelector('select[name="vulnerabilidade"]').value;
+            const email = document.querySelector('input[name="email"]').value;
+            const senha = document.querySelector('input[name="senha"]').value;
+            const localizacao = localizacaoSelect.value;
 
-        if (!telefone.value.match(/^\d+$/)) {
-            isValid = false;
-        }
+            let isValid = true;
 
-        if (!cpf.value.match(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)) {
-            isValid = false;
-        }
+            // Faça suas verificações de validação aqui
 
-        if (!vulnerabilidade.value.trim()) {
-            isValid = false;
-        }
+            if (!isValid) {
+                e.preventDefault(); // Impede o envio se a validação falhar
+            } else {
+                // Enviar os dados do formulário para o servidor
+                fetch('/cadastro', {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        nomeCompleto,
+                        telefone,
+                        cpf,
+                        localizacao, // Inclua a localização nos dados enviados
+                        vulnerabilidade,
+                        email,
+                        senha
+                    }),
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                })
+                    .then((response) => response.text())
+                    .then((message) => {
+                        form.reset(); // Limpa o formulário após o envio bem-sucedido
+                        alert("Cadastro Realizado!");
+                        window.location.href = '/login'
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            }
+        });
 
-        if (!email.value.trim()) {
-            isValid = false;
-        }
-
-        if (!senha.value.trim()) {
-            isValid = false;
-        }
-
-        if (!isValid) {
-            e.preventDefault();
-        }
-    });
-
-   
-
-    form.addEventListener('submit', function (e) {
-        e.preventDefault(); // Impede o envio padrão do formulário
-
-        // Coletar os dados do formulário
-        const nomeCompleto = document.querySelector('input[name="nomeCompleto"]').value;
-        const telefone = document.querySelector('input[name="telefone"]').value;
-        const cpf = document.querySelector('input[name="cpf"]').value;
-        const vulnerabilidade = document.querySelector('input[name="vulnerabilidade"]').value;
-        const email = document.querySelector('input[name="email"]').value;
-        const senha = document.querySelector('input[name="senha"]').value;
-
-        // Enviar os dados para o servidor via AJAX (usando fetch ou outra biblioteca)
-        fetch('/cadastro', {
-            method: 'POST',
-            body: JSON.stringify({
-                nomeCompleto,
-                telefone,
-                cpf,
-                vulnerabilidade,
-                email,
-                senha,
-            }),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((response) => response.text())
-            .then((message) => {
-                alert(message); // Exiba uma mensagem de sucesso ou erro
-                form.reset(); // Limpe o formulário após o envio bem-sucedido
+        // Fazer uma solicitação para a API do IBGE para obter a lista de estados
+        fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+            .then((response) => response.json())
+            .then((data) => {
+                // Preencher a combobox com os nomes dos estados
+                data.forEach((estado) => {
+                    const option = document.createElement('option');
+                    option.value = estado.nome; // Use o nome do estado como valor
+                    option.text = estado.nome; // Use o nome do estado como texto do option
+                    localizacaoSelect.appendChild(option);
+                });
             })
             .catch((error) => {
-                console.error(error);
+                console.error('Erro ao obter a lista de estados:', error);
             });
     });
-
-
-
-
-
 </script>
 
 </html>

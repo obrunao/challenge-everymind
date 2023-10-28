@@ -44,6 +44,7 @@
                 <ul class="vagas-list">
                     <% vagas.forEach((vaga) => { %>
                         <li class="vaga" data-vulnerabilidade="<%= vaga.vulnerabilidade %>">
+                            <img src="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" alt="Ícone da Vaga" style="width: 50px; height: 50px;">
                             <h3><%= vaga.titulo %></h3>
                             <div class="vaga-info">
                                 <p><span class="campo">Descrição:</span> <%= vaga.descricao %></p>

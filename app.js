@@ -36,6 +36,11 @@ app.get('/styles/vagas-disponiveis.css', (req, res) => {
   res.sendFile('vagas-disponiveis.css', { root: path.join(__dirname, 'styles') });
 });
 
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> a9d02d0ecef8610c94798221d8b5979f85191521
 db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
@@ -43,6 +48,7 @@ db.serialize(() => {
       nomeCompleto TEXT,
       telefone TEXT,
       cpf TEXT,
+      localizacao TEXT, 
       vulnerabilidade TEXT,
       email TEXT,
       senha TEXT
@@ -69,13 +75,13 @@ app.post('/cadastro', (req, res) => {
   const vulnerabilidade = req.body.vulnerabilidade;
   const email = req.body.email;
   const senha = req.body.senha;
-
+  const localizacao = req.body.localizacao;
 
 
   // Inserir os dados no banco de dados SQLite
   db.run(
-    'INSERT INTO users (nomeCompleto, telefone, cpf, vulnerabilidade, email, senha) VALUES (?, ?, ?, ?, ?, ?)',
-    [nomeCompleto, telefone, cpf, vulnerabilidade, email, senha],
+    'INSERT INTO users (nomeCompleto, telefone, cpf, vulnerabilidade, email, senha, localizacao) VALUES (?, ?, ?, ?, ?, ?, ?)', // Adicione a localização
+    [nomeCompleto, telefone, cpf, vulnerabilidade, email, senha, localizacao], // Adicione a localização
     function (err) {
       if (err) {
         return console.error(err.message);
@@ -88,7 +94,9 @@ app.post('/cadastro', (req, res) => {
   );
 });
 
-
+app.get('/teste', (req, res) => {
+  res.sendFile('teste.html', { root: path.join(__dirname, 'views') });
+});
 
 app.get('/login', (req, res) => {
   res.sendFile('login.html', { root: path.join(__dirname, 'views') });
@@ -203,11 +211,7 @@ app.post('/cadastrar-vaga', (req, res) => {
   // Primeiro, obtenha o ID do usuário da sessão
   const userId = req.session.userId;
 
-  // Verifique se o usuário está autenticado (você pode adicionar verificações adicionais)
 
-  if (!userId) {
-    return res.status(403).send('Acesso não autorizado. Faça o login para cadastrar vagas.');
-  }
 
   const titulo = req.body.titulo;
   const descricao = req.body.descricao;
@@ -361,10 +365,15 @@ app.post('/vagas-disponiveis/:id', (req, res) => {
     }
 
     if (row) {
+<<<<<<< HEAD
+      // Se o usuário já se candidatou, exiba um alerta e redirecione para a página "vagas-disponiveis"
+      return res.send('<script>alert("Você já se candidatou a esta vaga."); window.location.href = "/vagas-disponiveis";</script>');
+=======
       // Usuário já se candidatou, exiba um alerta na tela
       return res.send(
         '<script>alert("Você já se candidatou a esta vaga."); window.history.back();</script>'
       );
+>>>>>>> a9d02d0ecef8610c94798221d8b5979f85191521
     }
 
     db.run(
@@ -377,8 +386,13 @@ app.post('/vagas-disponiveis/:id', (req, res) => {
         '<script>alert("Candidatura registrada com sucesso."); window.history.back();</script>'
         console.log(`Candidatura registrada com sucesso, ID: ${this.lastID}`);
 
+<<<<<<< HEAD
+        // Exiba um alerta de sucesso e redirecione para a página "vagas-disponiveis"
+        return res.send('<script>alert("Candidatura registrada com sucesso."); window.location.href = "/vagas-disponiveis";</script>');
+=======
         // Redirecione o usuário de volta para a página "vagas-disponiveis" após a candidatura
         res.redirect('/vagas-disponiveis');
+>>>>>>> a9d02d0ecef8610c94798221d8b5979f85191521
       }
     );
   });
