@@ -36,8 +36,11 @@ app.get('/styles/vagas-disponiveis.css', (req, res) => {
   res.sendFile('vagas-disponiveis.css', { root: path.join(__dirname, 'styles') });
 });
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> a9d02d0ecef8610c94798221d8b5979f85191521
 db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
@@ -362,8 +365,15 @@ app.post('/vagas-disponiveis/:id', (req, res) => {
     }
 
     if (row) {
+<<<<<<< HEAD
       // Se o usuário já se candidatou, exiba um alerta e redirecione para a página "vagas-disponiveis"
       return res.send('<script>alert("Você já se candidatou a esta vaga."); window.location.href = "/vagas-disponiveis";</script>');
+=======
+      // Usuário já se candidatou, exiba um alerta na tela
+      return res.send(
+        '<script>alert("Você já se candidatou a esta vaga."); window.history.back();</script>'
+      );
+>>>>>>> a9d02d0ecef8610c94798221d8b5979f85191521
     }
 
     db.run(
@@ -373,10 +383,16 @@ app.post('/vagas-disponiveis/:id', (req, res) => {
         if (err) {
           return console.error(err.message);
         }
+        '<script>alert("Candidatura registrada com sucesso."); window.history.back();</script>'
         console.log(`Candidatura registrada com sucesso, ID: ${this.lastID}`);
 
+<<<<<<< HEAD
         // Exiba um alerta de sucesso e redirecione para a página "vagas-disponiveis"
         return res.send('<script>alert("Candidatura registrada com sucesso."); window.location.href = "/vagas-disponiveis";</script>');
+=======
+        // Redirecione o usuário de volta para a página "vagas-disponiveis" após a candidatura
+        res.redirect('/vagas-disponiveis');
+>>>>>>> a9d02d0ecef8610c94798221d8b5979f85191521
       }
     );
   });
