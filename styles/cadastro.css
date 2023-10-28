@@ -111,3 +111,39 @@ input[type="submit"]:hover{
 .signup_link a:hover{
   text-decoration: underline;
 }
+.txt_field select {
+  width: 100%;
+  padding: 0 5px;
+  height: 40px;
+  font-size: 16px;
+  border: none;
+  background: none;
+  outline: none;
+  border-bottom: 2px solid #adadad; /* Adiciona uma borda inferior para manter a consistência */
+}
+
+/* Modifique o estilo do label para "Vulnerabilidade" */
+.txt_field label {
+  position: absolute;
+  top: -25px; /* Posição para que fique acima do seletor */
+  left: 5px;
+  color: #adadad; /* Cor do label quando o seletor está em foco */
+  font-size: 16px;
+  pointer-events: none;
+  transition: .5s;
+}
+
+/* Modifique o estilo da borda inferior para o seletor em foco */
+.txt_field select:focus {
+  border-bottom: 2px solid #2691d9; /* Cor da borda inferior quando o seletor está em foco */
+}
+
+/* Modifique o estilo da borda inferior quando o seletor tem um valor válido */
+.txt_field select:valid {
+  border-bottom: 2px solid #2691d9; /* Cor da borda inferior quando o seletor tem um valor válido */
+}
+
+/* Modifique o estilo da borda inferior quando o seletor tem um valor inválido */
+.txt_field select:invalid {
+  border-bottom: 2px solid #ff0000; /* Cor da borda inferior quando o seletor tem um valor inválido (opcional) */
+}
