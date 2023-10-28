@@ -150,3 +150,9 @@ p {
 
 
   
+h2 {
+    text-align: center; 
+    font-size: 28px; 
+    color: black;
+    padding: 3%;
+}
