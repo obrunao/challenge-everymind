@@ -31,6 +31,11 @@ app.get('/styles/cadastro.css', (req, res) => {
   res.sendFile('cadastro.css', { root: path.join(__dirname, 'styles') });
 });
 
+app.get('/styles/vagas-disponiveis.css', (req, res) => {
+  res.setHeader('Content-Type', 'text/css');
+  res.sendFile('vagas-disponiveis.css', { root: path.join(__dirname, 'styles') });
+});
+
 db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
@@ -45,6 +50,17 @@ db.serialize(() => {
   `);
 });
 
+db.serialize(() => {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS user_vagas (
+      id INTEGER PRIMARY KEY,
+      user_id INTEGER,
+      vaga_id INTEGER,
+      FOREIGN KEY (user_id) REFERENCES users(id),
+      FOREIGN KEY (vaga_id) REFERENCES vagas(id)
+    )
+  `);
+});
 
 app.post('/cadastro', (req, res) => {
   const nomeCompleto = req.body.nomeCompleto;
@@ -334,7 +350,7 @@ app.post('/vagas-disponiveis/:id', (req, res) => {
   const userId = req.session.userId;
 
   if (!userId) {
-    return res.status(403).send('Acesso não autorizado. Faça o login para se candidatar a vagas.');
+    return res.status(403).redirect('/login');
   }
 
   const vagaId = req.params.id;
@@ -345,7 +361,10 @@ app.post('/vagas-disponiveis/:id', (req, res) => {
     }
 
     if (row) {
-      return res.status(400).send('Você já se candidatou a esta vaga.');
+      // Usuário já se candidatou, exiba um alerta na tela
+      return res.send(
+        '<script>alert("Você já se candidatou a esta vaga."); window.history.back();</script>'
+      );
     }
 
     db.run(
@@ -355,21 +374,16 @@ app.post('/vagas-disponiveis/:id', (req, res) => {
         if (err) {
           return console.error(err.message);
         }
+        '<script>alert("Candidatura registrada com sucesso."); window.history.back();</script>'
         console.log(`Candidatura registrada com sucesso, ID: ${this.lastID}`);
 
-        // Remove a vaga da tela (atualize a lista de vagas disponíveis)
-        db.run('DELETE FROM vagas WHERE id = ?', [vagaId], function (err) {
-          if (err) {
-            return console.error(err.message);
-          }
-
-          // Redirecione o usuário de volta para a página "vagas-disponiveis" após a candidatura
-          res.redirect('/vagas-disponiveis');
-        });
+        // Redirecione o usuário de volta para a página "vagas-disponiveis" após a candidatura
+        res.redirect('/vagas-disponiveis');
       }
     );
   });
 });
+
 
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
