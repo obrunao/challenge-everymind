@@ -36,7 +36,10 @@ app.get('/styles/vagas-disponiveis.css', (req, res) => {
   res.sendFile('vagas-disponiveis.css', { root: path.join(__dirname, 'styles') });
 });
 
-
+app.get('/styles/candidatos-vagas.css', (req, res) => {
+  res.setHeader('Content-Type', 'text/css');
+  res.sendFile('candidatos-vagas.css', { root: path.join(__dirname, 'styles') });
+});
 
 db.serialize(() => {
   db.run(`
@@ -120,11 +123,10 @@ app.post('/login', (req, res) => {
       }
 
       if (row) {
-        // Autenticação bem-sucedida
-        // Salve o nome do usuário na sessão
+
         req.session.nomeUsuario = row.nomeCompleto;
-        req.session.emailUsuario = email; // Salva o email do usuário na sessão
-        req.session.userId = row.id; // Salva o ID do usuário na sessão
+        req.session.emailUsuario = email; 
+        req.session.userId = row.id; 
 
         // Redirecione o usuário para a página do candidato
         res.redirect('/candidato-pagina-inicial');
@@ -157,9 +159,6 @@ app.get('/entrevistas', (req, res) => {
   res.sendFile('entrevistas.html', { root: path.join(__dirname, 'views') });
 });
 
-app.get('/minhas-vagas', (req, res) => {
-  res.sendFile('minhas-vagas.html', { root: path.join(__dirname, 'views') });
-});
 
 app.get('/perfil', (req, res) => {
   res.sendFile('perfil.html', { root: path.join(__dirname, 'views') });
@@ -273,13 +272,13 @@ app.get('/styles/vagas-cadastradas.css', (req, res) => {
   res.sendFile('vagas-cadastradas.css', { root: path.join(__dirname, 'styles') });
 });
 
+
+
+
 app.get('/entrevistas-candidato', (req, res) => {
   res.sendFile('entrevistas-candidato.html', { root: path.join(__dirname, 'views') });
 });
 
-app.get('/entrevistas-empresa', (req, res) => {
-  res.sendFile('entrevistas-empresa.html', { root: path.join(__dirname, 'views') });
-});
 
 app.get('/dashboard-candidato', (req, res) => {
   res.sendFile('dashboard-candidato.html', { root: path.join(__dirname, 'views') });
@@ -380,6 +379,41 @@ app.post('/vagas-disponiveis/:id', (req, res) => {
         return res.send('<script>alert("Candidatura registrada com sucesso."); window.location.href = "/vagas-disponiveis";</script>');
       }
     );
+  });
+});
+
+app.get('/minhas-vagas', (req, res) => {
+  // Primeiro, obtenha o ID do usuário da sessão
+  const userId = req.session.userId;
+
+  if (!userId) {
+    return res.status(403).redirect('/login');
+  }
+
+  // Consulte o banco de dados para recuperar as vagas às quais o usuário se candidatou
+  db.all('SELECT v.* FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id WHERE c.user_id = ?', [userId], (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send('Erro ao buscar vagas.');
+    }
+
+    res.render('minhas-vagas', { vagas: rows });
+  });
+});
+
+
+app.get('/candidatos-vagas', (req, res) => {
+  const userId = req.session.userId;
+
+  // Consulte o banco de dados para recuperar informações das vagas onde o usuário se candidatou
+  db.all('SELECT v.titulo, u.nomeCompleto, u.localizacao, u.vulnerabilidade FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id JOIN users u ON u.id = c.user_id WHERE c.user_id = ?', [userId], (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send('Erro ao buscar informações de candidaturas.');
+    }
+
+    res.render('candidatos-vagas', { candidaturas: rows, nomeUsuario: req.session.nomeUsuario });
+
   });
 });
 

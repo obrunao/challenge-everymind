@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
     <meta charset="utf-8">
     <title>Everymind - Empresa</title>
-    <link rel="stylesheet" href="../styles/candidato.css">
+    <link rel="stylesheet" href="../styles/candidatos-vagas.css">
     <link rel="icon" type="image/png" href="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" id="icon">
-   
+
 </head>
+
 <body>
     <div id="menu">
         <div class="hamburger">
@@ -18,18 +20,45 @@
             <ul>
                 <li><a href="/cadastrar-vaga">Cadastrar Vaga</a></li>
                 <li><a href="/vagas-cadastradas">Vagas Cadastradas</a></li>
-                <li><a href="/entrevistas-empresa">Entrevistas</a></li>
+                <li><a href="/candidatos-vagas">Candidatos</a></li>
                 <li><a href="/dashboard-empresa">Dashboard</a></li>
+                <li><a href="/login" class="logout-link">Logout</a></li>
             </ul>
         </div>
     </div>
-
-    <div class="content">
-        <div class="container">
-            <p>Minhas Entrevistas</p>
-        </div>
+    <div class="container">
+        <h2>Candidatos e Vagas</h2>
+        <% if (candidaturas.length> 0) { %>
+            <ul class="vagas-list">
+                <% candidaturas.forEach((candidatura)=> { %>
+                    <li class="vaga" data-vulnerabilidade="<%= candidatura.vulnerabilidade %>">
+                        <img src="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" alt="Ícone da Vaga"
+                            style="width: 50px; height: 50px;">
+                        <h3>
+                            <%= candidatura.titulo %>
+                        </h3>
+                        <div class="vaga-info">
+                            <p><span class="campo">Nome:</span>
+                                <%= candidatura.nomeCompleto %>
+                            </p>
+                            <p><span class="campo">Localização:</span>
+                                <%= candidatura.localizacao %>
+                            </p>
+                            <p><span class="campo">Vulnerabilidade:</span>
+                                <%= candidatura.vulnerabilidade %>
+                            </p>
+                        </div>
+                      
+                        <form method="post" action="">
+                            <button type="submit" class="agendar-entrevista-button">Agendar Entrevista</button>
+                        </form>
+                    </li>
+                    <% }); %>
+            </ul>
+            <% } else { %>
+                <p>Você ainda não recebeu nenhuma candidatura.</p>
+                <% } %>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
@@ -65,4 +94,5 @@
         });
     </script>
 </body>
+
 </html>

@@ -6,6 +6,7 @@
     <title>Everymind - Candidato</title>
     <link rel="stylesheet" href="../styles/vagas-disponiveis.css">
     <link rel="icon" type="image/png" href="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" id="icon">
+
 </head>
 
 <body>
@@ -26,32 +27,20 @@
             </ul>
         </div>
     </div>
+
     <div class="content">
         <div class="container">
-            <h2>Vagas Disponíveis</h2>
-            <div class="filtro-vulnerabilidade">
-                <label for="filtro-vulnerabilidade">Filtrar por Vulnerabilidade:</label>
-                <select id="filtro-vulnerabilidade">
-                    <option value="">Todas</option>
-                    <option value="LGBTQIA+">LGBTQIA+</option>
-                    <option value="Baixa Renda">Baixa Renda</option>
-                    <option value="Mulher">Mulher</option>
-                    <option value="PCD">PCD</option>
-                    <option value="Negro(a)">Negro(a)</option>
-                </select>
-            </div>
-
+            <h2>Minhas Vagas</h2>
             <% if (vagas.length> 0) { %>
                 <ul class="vagas-list">
-                    <% vagas.forEach((vaga)=> { %>
+                    <% vagas.forEach(function(vaga) { %>
                         <li class="vaga" data-vulnerabilidade="<%= vaga.vulnerabilidade %>">
                             <img src="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" alt="Ícone da Vaga"
-                                    style="width: 50px; height: 50px;">
+                                style="width: 50px; height: 50px;">
                             <h3>
                                 <%= vaga.titulo %>
                             </h3>
                             <div class="vaga-info">
-                                
                                 <p><span class="campo">Descrição:</span>
                                     <%= vaga.descricao %>
                                 </p>
@@ -68,18 +57,15 @@
                                     <%= vaga.localizacao %>
                                 </p>
                             </div>
-                            <form method="post" action="/vagas-disponiveis/<%= vaga.id %>">
-                                <button type="button" class="aplicar-button">Aplicar</button>
-                            </form>
+                           
                         </li>
                         <% }); %>
                 </ul>
                 <% } else { %>
-                    <p>Nenhuma vaga cadastrada.</p>
+                    <p>Nenhuma vaga candidatada.</p>
                     <% } %>
         </div>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
@@ -97,28 +83,16 @@
                 $(this).parent().removeClass('expanded');
             });
 
-            // Adicione um evento de alteração no menu suspenso
-            $('#filtro-vulnerabilidade').on('change', function () {
-                var filtroVulnerabilidade = $(this).val();
+            function svgCurve() {
+                if (menuExpanded) {
 
-                $('.vaga').hide();
-
-                if (filtroVulnerabilidade === '') {
-                    $('.vaga').show();
                 } else {
-                    $('.vaga[data-vulnerabilidade="' + filtroVulnerabilidade + '"]').show();
-                }
-            });
 
-            // Adicione um evento de clique para os botões de aplicação
-            $('.aplicar-button').on('click', function () {
-                var confirmacao = confirm("Tem certeza de que deseja se candidatar a esta vaga?");
-
-                // Se o usuário confirmar, envie o formulário
-                if (confirmacao) {
-                    $(this).parent().submit();
                 }
-            });
+
+                window.requestAnimationFrame(svgCurve);
+            }
+
         });
     </script>
 </body>

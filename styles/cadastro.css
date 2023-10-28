@@ -147,3 +147,4 @@ input[type="submit"]:hover{
 .txt_field select:invalid {
   border-bottom: 2px solid #ff0000; /* Cor da borda inferior quando o seletor tem um valor inválido (opcional) */
 }
+
