@@ -209,9 +209,6 @@ app.post('/cadastrar-vaga', (req, res) => {
   );
 });
 
-
-
-
 app.get('/vagas-cadastradas', (req, res) => {
   db.all('SELECT * FROM vagas', (err, rows) => {
     if (err) {
@@ -227,6 +224,24 @@ app.get('/styles/vagas-cadastradas.css', (req, res) => {
   res.setHeader('Content-Type', 'text/css');
   res.sendFile('vagas-cadastradas.css', { root: path.join(__dirname, 'styles') });
 });
+
+app.get('/entrevistas-candidato', (req, res) => {
+  res.sendFile('entrevistas-candidato.html', { root: path.join(__dirname, 'views') });
+});
+
+app.get('/entrevistas-empresa', (req, res) => {
+  res.sendFile('entrevistas-empresa.html', { root: path.join(__dirname, 'views') });
+});
+
+app.get('/dashboard-candidato', (req, res) => {
+  res.sendFile('dashboard-candidato.html', { root: path.join(__dirname, 'views') });
+});
+
+app.get('/dashboard-empresa', (req, res) => {
+  res.sendFile('dashboard-empresa.html', { root: path.join(__dirname, 'views') });
+});
+
+
 
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
