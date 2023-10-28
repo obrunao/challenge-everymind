@@ -141,3 +141,51 @@ p {
     margin-top: 10px;
     /* Espaço superior para separar do título */
 }
+
+/* Adicione estilos inline para os cards */
+.vaga {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 30%; 
+    display: inline-block;
+    vertical-align: top; 
+}
+
+.vaga h3 {
+    font-size: 24px;
+    margin: 0 0 10px;
+    color: #333;
+}
+
+.campo {
+    font-weight: bold;
+    color: #333;
+}
+
+
+.vaga-info p {
+    margin: 5px 0;
+    color: #555;
+}
+
+h2 {
+    text-align: center; 
+    font-size: 28px; 
+    color: black;
+    padding: 3%;
+}
+
+/* Estilos do filtro */
+.filtro-vulnerabilidade {
+    text-align: center; 
+    margin: 20px 0; 
+}
+
+.filtro-vulnerabilidade label {
+    font-weight: bold;
+    color: #333;
+}

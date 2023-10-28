@@ -93,7 +93,7 @@ app.post('/login', (req, res) => {
     res.redirect('/empresa-pagina-inicial');
   } else {
     // Caso contrário, redirecione para a página do candidato
-    db.get('SELECT nomeCompleto FROM users WHERE email = ? AND senha = ?', [email, senha], (err, row) => {
+    db.get('SELECT id, nomeCompleto FROM users WHERE email = ? AND senha = ?', [email, senha], (err, row) => {
       if (err) {
         return console.error(err.message);
       }
@@ -103,6 +103,7 @@ app.post('/login', (req, res) => {
         // Salve o nome do usuário na sessão
         req.session.nomeUsuario = row.nomeCompleto;
         req.session.emailUsuario = email; // Salva o email do usuário na sessão
+        req.session.userId = row.id; // Salva o ID do usuário na sessão
 
         // Redirecione o usuário para a página do candidato
         res.redirect('/candidato-pagina-inicial');
@@ -125,9 +126,7 @@ app.get('/candidato-pagina-inicial', (req, res) => {
   res.sendFile('candidato-pagina-inicial.html', { root: path.join(__dirname, 'views') });
 });
 
-app.get('/vagas-disponiveis', (req, res) => {
-  res.sendFile('vagas-disponiveis.html', { root: path.join(__dirname, 'views') });
-});
+
 
 app.get('/dashboard', (req, res) => {
   res.sendFile('dashboard.html', { root: path.join(__dirname, 'views') });
@@ -185,6 +184,15 @@ db.serialize(() => {
 });
 
 app.post('/cadastrar-vaga', (req, res) => {
+  // Primeiro, obtenha o ID do usuário da sessão
+  const userId = req.session.userId;
+
+  // Verifique se o usuário está autenticado (você pode adicionar verificações adicionais)
+
+  if (!userId) {
+    return res.status(403).send('Acesso não autorizado. Faça o login para cadastrar vagas.');
+  }
+
   const titulo = req.body.titulo;
   const descricao = req.body.descricao;
   const salario = req.body.salario;
@@ -201,10 +209,22 @@ app.post('/cadastrar-vaga', (req, res) => {
       if (err) {
         return console.error(err.message);
       }
-      console.log(`Vaga cadastrada com sucesso, ID: ${this.lastID}`);
+      const vagaId = this.lastID;
 
-      // Redirecionar o usuário para onde desejar após o cadastro da vaga
-      res.redirect('/vagas-cadastradas');
+      // Agora, insira o relacionamento entre o usuário e a vaga na tabela user_vagas
+      db.run(
+        'INSERT INTO user_vagas (user_id, vaga_id) VALUES (?, ?)',
+        [userId, vagaId],
+        function (err) {
+          if (err) {
+            return console.error(err.message);
+          }
+          console.log(`Vaga cadastrada com sucesso, ID: ${vagaId}`);
+          console.log(`Relacionamento criado na tabela user_vagas.`);
+          // Redirecione o usuário para onde desejar após o cadastro da vaga
+          res.redirect('/vagas-cadastradas');
+        }
+      );
     }
   );
 });
@@ -217,6 +237,17 @@ app.get('/vagas-cadastradas', (req, res) => {
     }
 
     res.render('vagas-cadastradas', { vagas: rows }); // Renderiza a página EJS com os dados das vagas
+  });
+});
+
+app.get('/vagas-disponiveis', (req, res) => {
+  db.all('SELECT * FROM vagas', (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send('Erro ao buscar vagas.');
+    }
+
+    res.render('vagas-disponiveis', { vagas: rows }); // Renderiza a página EJS com os dados das vagas
   });
 });
 
@@ -241,7 +272,104 @@ app.get('/dashboard-empresa', (req, res) => {
   res.sendFile('dashboard-empresa.html', { root: path.join(__dirname, 'views') });
 });
 
+db.serialize(() => {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS candidaturas (
+      id INTEGER PRIMARY KEY,
+      user_id INTEGER,
+      vaga_id INTEGER,
+      FOREIGN KEY (user_id) REFERENCES users(id),
+      FOREIGN KEY (vaga_id) REFERENCES vagas(id)
+    )
+  `);
+});
 
+// 1. Verifique se o usuário fez login com sucesso
+app.post('/login', (req, res) => {
+  const email = req.body.email;
+  const senha = req.body.senha;
+
+  // Verifique o domínio do e-mail
+  if (email.endsWith('@everymind.com.br')) {
+    // Se o e-mail terminar com "@everymind.com.br", redirecione para a página da empresa
+    res.redirect('/empresa-pagina-inicial');
+  } else {
+    // Caso contrário, redirecione para a página do candidato
+    db.get('SELECT id, nomeCompleto FROM users WHERE email = ? AND senha = ?', [email, senha], (err, row) => {
+      if (err) {
+        return console.error(err.message);
+      }
+
+      if (row) {
+        // Autenticação bem-sucedida
+        // Salve o nome do usuário na sessão
+        req.session.nomeUsuario = row.nomeCompleto;
+        req.session.emailUsuario = email; // Salva o email do usuário na sessão
+        req.session.userId = row.id; // Salva o ID do usuário na sessão
+
+        // Redirecione o usuário para a página do candidato
+        res.redirect('/candidato-pagina-inicial');
+      } else {
+        // Credenciais inválidas
+        // Redirecione o usuário de volta para a página de login com uma mensagem de erro
+        res.redirect('/login?erro=credenciais-invalidas');
+      }
+    });
+  }
+});
+
+// 2. Atualize a rota para processar o envio da candidatura
+app.get('/vagas-disponiveis', (req, res) => {
+  db.all('SELECT * FROM vagas', (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send('Erro ao buscar vagas.');
+    }
+
+    res.render('vagas-disponiveis', { vagas: rows });
+  });
+});
+
+app.post('/vagas-disponiveis/:id', (req, res) => {
+  const userId = req.session.userId;
+
+  if (!userId) {
+    return res.status(403).send('Acesso não autorizado. Faça o login para se candidatar a vagas.');
+  }
+
+  const vagaId = req.params.id;
+
+  db.get('SELECT * FROM candidaturas WHERE user_id = ? AND vaga_id = ?', [userId, vagaId], (err, row) => {
+    if (err) {
+      return console.error(err.message);
+    }
+
+    if (row) {
+      return res.status(400).send('Você já se candidatou a esta vaga.');
+    }
+
+    db.run(
+      'INSERT INTO candidaturas (user_id, vaga_id) VALUES (?, ?)',
+      [userId, vagaId],
+      function (err) {
+        if (err) {
+          return console.error(err.message);
+        }
+        console.log(`Candidatura registrada com sucesso, ID: ${this.lastID}`);
+
+        // Remove a vaga da tela (atualize a lista de vagas disponíveis)
+        db.run('DELETE FROM vagas WHERE id = ?', [vagaId], function (err) {
+          if (err) {
+            return console.error(err.message);
+          }
+
+          // Redirecione o usuário de volta para a página "vagas-disponiveis" após a candidatura
+          res.redirect('/vagas-disponiveis');
+        });
+      }
+    );
+  });
+});
 
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
