@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>Teste de API do IBGE</title>
+</head>
+<body>
+    <h1>Lista de Estados do Brasil</h1>
+    <ul id="estados-lista"></ul>
+
+    <script>
+        const estadosLista = document.getElementById('estados-lista');
+
+        fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+            .then((response) => response.json())
+            .then((data) => {
+                data.forEach((estado) => {
+                    const estadoItem = document.createElement('li');
+                    estadoItem.textContent = estado.nome;
+                    estadosLista.appendChild(estadoItem);
+                });
+            })
+            .catch((error) => {
+                console.error('Erro ao obter a lista de estados:', error);
+            });
+    </script>
+</body>
+</html>

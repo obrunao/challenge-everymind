@@ -64,9 +64,11 @@
                 </div>
                 <div class="txt_field">
                     <label for="localizacao">Localização:</label>
-                    <input type="text" id="localizacao" name="localizacao">
+                    <select id="localizacao" name="localizacao">
+                        <option value="">Selecione um Estado</option>
+                    </select>
                 </div>
-             
+
                 <input type="submit" value="Cadastrar Vaga">
             </form>
         </div>
@@ -103,6 +105,51 @@
 
 
         });
+
+        const salarioInput = document.getElementById('salario');
+
+        salarioInput.addEventListener('focus', function () {
+            if (!salarioInput.value.includes('R$')) {
+                salarioInput.value = 'R$ ' + salarioInput.value;
+            }
+        });
+
+        salarioInput.addEventListener('blur', function () {
+            if (salarioInput.value === 'R$ ') {
+                salarioInput.value = '';
+            }
+        });
+
+        salarioInput.addEventListener('input', function () {
+            if (salarioInput.value === 'R$ ') {
+                salarioInput.value = '';
+            }
+        });
+
+        function preencherLocalizacao() {
+            const localizacaoSelect = document.getElementById('localizacao');
+
+            fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+                .then((response) => response.json())
+                .then((data) => {
+                    // Limpar qualquer opção anterior
+                    localizacaoSelect.innerHTML = '<option value="">Selecione um Estado</option>';
+
+                    // Preencher a combobox com os nomes dos estados
+                    data.forEach((estado) => {
+                        const option = document.createElement('option');
+                        option.value = estado.nome; // Use o nome do estado como valor
+                        option.text = estado.nome; // Use o nome do estado como texto do option
+                        localizacaoSelect.appendChild(option);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Erro ao obter a lista de estados:', error);
+                });
+        }
+
+        // Chamar a função para preencher o campo de Localização quando a página carregar
+        window.addEventListener('DOMContentLoaded', preencherLocalizacao);
     </script>
 </body>
 
