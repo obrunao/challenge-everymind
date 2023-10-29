@@ -1,5 +1,8 @@
+
+
 const express = require('express');
 const session = require('express-session');
+
 const path = require('path');
 const app = express();
 const bodyParser = require('body-parser');
@@ -7,7 +10,6 @@ const sqlite3 = require('sqlite3').verbose();
 const port = process.env.PORT || 3000;
 
 app.use(express.static(path.join(__dirname, 'styles')));
-
 const db = new sqlite3.Database('database.sqlite');
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -99,7 +101,9 @@ app.get('/teste', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-  res.sendFile('login.html', { root: path.join(__dirname, 'views') });
+  const erro = req.query.erro;
+  res.render('login', {erro})
+  //res.sendFile('login.html', { root: path.join(__dirname, 'views') });
 });
 
 app.get('/styles/login.css', (req, res) => {
@@ -132,8 +136,9 @@ app.post('/login', (req, res) => {
         res.redirect('/candidato-pagina-inicial');
       } else {
         // Credenciais inválidas
-        // Redirecione o usuário de volta para a página de login com uma mensagem de erro
+        // Redirecione o usuário de volta para a página de login com uma mensagem de erro 
         res.redirect('/login?erro=credenciais-invalidas');
+        
       }
     });
   }
@@ -329,6 +334,8 @@ app.post('/login', (req, res) => {
         // Credenciais inválidas
         // Redirecione o usuário de volta para a página de login com uma mensagem de erro
         res.redirect('/login?erro=credenciais-invalidas');
+        
+        
       }
     });
   }
@@ -413,7 +420,7 @@ app.get('/candidatos-vagas', (req, res) => {
     }
 
     res.render('candidatos-vagas', { candidaturas: rows, nomeUsuario: req.session.nomeUsuario });
-
+    
   });
 });
 

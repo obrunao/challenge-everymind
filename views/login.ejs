@@ -5,11 +5,24 @@
     <title>Everymind - Login</title>
     <link rel="stylesheet" href="../styles/login.css">
     <link rel="icon" type="image/png" href="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" id="icon">
+    <% if (erro) { %>
+      <p 
+        style="
+         background-color: #ff9999;
+          border: 1px solid #ff0000;
+          padding: 10px;
+          margin: 10px;
+          text-align: center;
+        " 
+        class="erro"><%= erro %></p>
+    <% } %>
   </head>
   
   <body>
+    
     <div class="center">
       <h1>Login</h1>
+      
       <form method="post">
         <div class="txt_field">
           <input name="email" type="text" required>
