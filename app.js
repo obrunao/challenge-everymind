@@ -25,7 +25,7 @@ app.set('view engine', 'ejs'); // Configura o mecanismo de visualização EJS
 app.set('views', path.join(__dirname, 'views'));
 
 app.get('/cadastro', (req, res) => {
-  res.sendFile('cadastro.html', { root: path.join(__dirname, 'views') });
+  res.render('cadastro.ejs', { root: path.join(__dirname, 'views') });
 });
 
 app.get('/styles/cadastro.css', (req, res) => {
