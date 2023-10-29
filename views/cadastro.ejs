@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-
+    <!-- STYLES :-->
+    <style>
+        
+        .vulnerabilidade-box {
+            display: inline-block;
+            background-color: #ddd;
+            padding: 5px;
+            margin: 5px;
+            border: 1px solid #888;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+    </style>
+    
+    <!-- STYLES END -->
 <head>
     <meta charset="utf-8">
     <title>Everymind - Cadastro</title>
@@ -28,14 +43,63 @@
             </div>
             <div class="txt_field">
                 <select id="vulnerabilidade" name="vulnerabilidade" required>
-                    <option value="Selecione uma Opção">Selecione sua vulnerabilidade</option>
-                    <option value="LGBTQIA+">LGBTQIA+</option>
-                    <option value="Baixa Renda">Baixa Renda</option>
-                    <option value="Mulher">Mulher</option>
-                    <option value="PCD">PCD</option>
-                    <option value="Negro(a)">Negro(a)</option>
+                    <option value="Selecione uma Opção">Selecione suas vulnerabilidades</option>
+                    <option id = "LGBTQIA" value="LGBTQIA+">LGBTQIA+</option>
+                    <option id = "br"value="Baixa Renda">Baixa Renda</option>
+                    <option id = "mulher"value="Mulher">Mulher</option>
+                    <option id = "pcd"value="PCD">PCD</option>
+                    <option id = "negro"value="Negro(a)">Negro(a)</option>
                 </select>
             </div>
+        
+            <!-- Elemento para exibir as opções selecionadas como caixas -->
+            <div id="vulnerabilidade-boxes"></div>
+        
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    const selectElement = document.getElementById("vulnerabilidade");
+                    const vulnerabilityBoxesElement = document.getElementById("vulnerabilidade-boxes");
+                    const selectedVulnerabilities = [];
+            
+                    selectElement.addEventListener("change", function() {
+                        const selectedOption = selectElement.selectedOptions[0];
+                        const vulnerability = selectedOption.value;
+            
+                        if (selectedVulnerabilities.includes(vulnerability)) {
+                            // Se já foi selecionada, desmarcar
+                            const index = selectedVulnerabilities.indexOf(vulnerability);
+                            if (index !== -1) {
+                                selectedVulnerabilities.splice(index, 1);
+                            }
+                        } else {
+                            // Se ainda não foi selecionada, adicionar à lista
+                            selectedVulnerabilities.push(vulnerability);
+                        }
+            
+                        vulnerabilityBoxesElement.innerHTML = "";
+            
+                        selectedVulnerabilities.forEach(vulnerability => {
+                            const box = document.createElement("div");
+                            box.classList.add("vulnerabilidade-box");
+                            box.textContent = vulnerability;
+            
+                            box.addEventListener("click", function() {
+                                const correspondingOption = Array.from(selectElement.options).find(option => option.value === vulnerability);
+                                if (correspondingOption) {
+                                    correspondingOption.selected = false;
+                                    const index = selectedVulnerabilities.indexOf(vulnerability);
+                                    if (index !== -1) {
+                                        selectedVulnerabilities.splice(index, 1);
+                                    }
+                                    box.remove();
+                                }
+                            });
+            
+                            vulnerabilityBoxesElement.appendChild(box);
+                        });
+                    });
+                });
+            </script>
             <div class="txt_field">
                 <input type="email" name="email" required placeholder="E-mail">
             </div>
