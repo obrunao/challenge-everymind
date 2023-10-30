@@ -5,24 +5,15 @@
     <title>Everymind - Login</title>
     <link rel="stylesheet" href="../styles/login.css">
     <link rel="icon" type="image/png" href="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" id="icon">
+
     <% if (erro) { %>
-      <p 
-        style="
-         background-color: #ff9999;
-          border: 1px solid #ff0000;
-          padding: 10px;
-          margin: 10px;
-          text-align: center;
-        " 
-        class="erro"><%= erro %></p>
+      <p class="erro"><%= erro %></p>
     <% } %>
+
   </head>
-  
   <body>
-    
     <div class="center">
       <h1>Login</h1>
-      
       <form method="post">
         <div class="txt_field">
           <input name="email" type="text" required>
@@ -40,6 +31,22 @@
           Ainda não tem cadastro? <a href="/cadastro">Cadastre-se</a>
         </div>
       </form>
+      
+      <div id="alerta" class="alerta" style="display: none;">
+        Credenciais inválidas. Por favor, verifique seu e-mail e senha.
+      </div>
     </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const alerta = document.querySelector('#alerta');
+
+        // Verifique se a URL contém um parâmetro de erro
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('erro')) {
+          alerta.style.display = 'block'; // Exiba o alerta se houver um erro na URL
+        }
+      });
+    </script>
   </body>
 </html>

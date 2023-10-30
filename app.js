@@ -1,5 +1,4 @@
-
-
+const { check, validationResult } = require('express-validator');
 const express = require('express');
 const session = require('express-session');
 
@@ -25,7 +24,7 @@ app.set('view engine', 'ejs'); // Configura o mecanismo de visualização EJS
 app.set('views', path.join(__dirname, 'views'));
 
 app.get('/cadastro', (req, res) => {
-  res.render('cadastro.ejs', { root: path.join(__dirname, 'views') });
+  res.sendFile('cadastro.html', { root: path.join(__dirname, 'views') });
 });
 
 app.get('/styles/cadastro.css', (req, res) => {
@@ -74,16 +73,15 @@ app.post('/cadastro', (req, res) => {
   const nomeCompleto = req.body.nomeCompleto;
   const telefone = req.body.telefone;
   const cpf = req.body.cpf;
-  const vulnerabilidade = req.body.vulnerabilidade;
+  const vulnerabilidades = req.body.vulnerabilidades; // Agora, vulnerabilidades é um array
   const email = req.body.email;
   const senha = req.body.senha;
   const localizacao = req.body.localizacao;
 
-
   // Inserir os dados no banco de dados SQLite
   db.run(
-    'INSERT INTO users (nomeCompleto, telefone, cpf, vulnerabilidade, email, senha, localizacao) VALUES (?, ?, ?, ?, ?, ?, ?)', // Adicione a localização
-    [nomeCompleto, telefone, cpf, vulnerabilidade, email, senha, localizacao], // Adicione a localização
+    'INSERT INTO users (nomeCompleto, telefone, cpf, vulnerabilidade, email, senha, localizacao) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [nomeCompleto, telefone, cpf, vulnerabilidades, email, senha, localizacao],
     function (err) {
       if (err) {
         return console.error(err.message);
@@ -95,7 +93,6 @@ app.post('/cadastro', (req, res) => {
     }
   );
 });
-
 app.get('/teste', (req, res) => {
   res.sendFile('teste.html', { root: path.join(__dirname, 'views') });
 });
@@ -105,7 +102,6 @@ app.get('/login', (req, res) => {
   res.render('login', {erro})
   //res.sendFile('login.html', { root: path.join(__dirname, 'views') });
 });
-
 app.get('/styles/login.css', (req, res) => {
   res.setHeader('Content-Type', 'text/css');
   res.sendFile('login.css', { root: path.join(__dirname, 'styles') });
@@ -114,6 +110,7 @@ app.get('/styles/login.css', (req, res) => {
 app.post('/login', (req, res) => {
   const email = req.body.email;
   const senha = req.body.senha;
+  let erro = null; // Inicialize a variável de erro como nula
 
   // Verifique o domínio do e-mail
   if (email.endsWith('@everymind.com.br')) {
@@ -127,23 +124,22 @@ app.post('/login', (req, res) => {
       }
 
       if (row) {
-
+        // Autenticação bem-sucedida
+        // Salve o nome do usuário na sessão
         req.session.nomeUsuario = row.nomeCompleto;
-        req.session.emailUsuario = email; 
-        req.session.userId = row.id; 
+        req.session.emailUsuario = email; // Salva o email do usuário na sessão
+        req.session.userId = row.id; // Salva o ID do usuário na sessão
 
         // Redirecione o usuário para a página do candidato
         res.redirect('/candidato-pagina-inicial');
       } else {
         // Credenciais inválidas
-        // Redirecione o usuário de volta para a página de login com uma mensagem de erro 
-        res.redirect('/login?erro=credenciais-invalidas');
-        
+        erro = 'Credenciais inválidas'; // Defina a variável de erro
+        res.render('login', { erro }); // Passe a variável de erro para a página de login
       }
     });
   }
 });
-
 
 
 app.get('/esqueceu-senha', (req, res) => {
@@ -242,7 +238,7 @@ app.post('/cadastrar-vaga', (req, res) => {
           }
           console.log(`Vaga cadastrada com sucesso, ID: ${vagaId}`);
           console.log(`Relacionamento criado na tabela user_vagas.`);
-          // Redirecione o usuário para onde desejar após o cadastro da vaga
+          
           res.redirect('/vagas-cadastradas');
         }
       );
@@ -334,8 +330,8 @@ app.post('/login', (req, res) => {
         // Credenciais inválidas
         // Redirecione o usuário de volta para a página de login com uma mensagem de erro
         res.redirect('/login?erro=credenciais-invalidas');
-        
-        
+
+
       }
     });
   }
@@ -420,7 +416,7 @@ app.get('/candidatos-vagas', (req, res) => {
     }
 
     res.render('candidatos-vagas', { candidaturas: rows, nomeUsuario: req.session.nomeUsuario });
-    
+
   });
 });
 

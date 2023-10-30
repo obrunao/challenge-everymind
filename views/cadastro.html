@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Everymind - Cadastro</title>
+    <link rel="stylesheet" href="../styles/cadastro.css">
+    <link rel="icon" type="image/png" href="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" id="icon">
+</head>
+
+<body>
+    <div class="center">
+        <h1>Cadastro</h1>
+        <form id="cadastro-form" method="post">
+            <div class="txt_field">
+                <input type="text" name="nomeCompleto" required placeholder="Nome Completo">
+            </div>
+            <div class="txt_field">
+                <input type="text" name="telefone" required placeholder="Telefone">
+            </div>
+            <div class="txt_field">
+                <input type="text" name="cpf" required placeholder="CPF">
+            </div>
+            <div class="txt_field">
+                <select name="localizacao" required>
+                    <option value="">Selecione seu Estado</option>
+                </select>
+            </div>
+            <div class="txt_field">
+                <select id="vulnerabilidades" name="vulnerabilidades" multiple required>
+                    <option >Selecione suas vulnerabilidades</option>
+                    <option value="LGBTQIA+">LGBTQIA+</option>
+                    <option value="Baixa Renda">Baixa Renda</option>
+                    <option value="Mulher">Mulher</option>
+                    <option value="PCD">PCD</option>
+                    <option value="Negro(a)">Negro(a)</option>
+                </select>
+                
+            </div>
+            <div class="txt_field">
+                <input type="email" name="email" required placeholder="E-mail">
+            </div>
+            <div class="txt_field">
+                <input type="password" name="senha" required placeholder="Senha">
+            </div>
+            <input type="submit" value="Cadastrar">
+            <div class="signup_link">
+                Já possui cadastro? <a href="/login">Faça login</a>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('#cadastro-form');
+        const localizacaoSelect = document.querySelector('select[name="localizacao"]');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault(); // Impede o envio padrão do formulário
+
+            const nomeCompleto = document.querySelector('input[name="nomeCompleto"]').value;
+            const telefone = document.querySelector('input[name="telefone"]').value;
+            const cpf = document.querySelector('input[name="cpf"]').value;
+            const vulnerabilidadesSelect = document.querySelector('select[name="vulnerabilidades"]');
+            const selectedVulnerabilidades = Array.from(vulnerabilidadesSelect.selectedOptions).map(option => option.value);
+            const email = document.querySelector('input[name="email"]').value;
+            const senha = document.querySelector('input[name="senha"]').value;
+            const localizacao = localizacaoSelect.value;
+
+            let isValid = true;
+
+            if (!isValid) {
+                e.preventDefault();
+            } else {
+                fetch('/cadastro', {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        nomeCompleto,
+                        telefone,
+                        cpf,
+                        vulnerabilidades: selectedVulnerabilidades, // Envia as vulnerabilidades como um array
+                        email,
+                        senha,
+                        localizacao,
+                    }),
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                })
+                    .then((response) => response.text())
+                    .then((message) => {
+                        form.reset(); // Limpa o formulário após o envio bem-sucedido
+                        alert("Cadastro Realizado!");
+                        window.location.href = '/login'
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            }
+        });
+
+        // Fazer uma solicitação para a API do IBGE para obter a lista de estados
+        fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+            .then((response) => response.json())
+            .then((data) => {
+                // Preencher a combobox com os nomes dos estados
+                data.forEach((estado) => {
+                    const option = document.createElement('option');
+                    option.value = estado.nome; // Use o nome do estado como valor
+                    option.text = estado.nome; // Use o nome do estado como texto do option
+                    localizacaoSelect.appendChild(option);
+                });
+            })
+            .catch((error) => {
+                console.error('Erro ao obter a lista de estados:', error);
+            });
+    });
+</script>
+
+</html>

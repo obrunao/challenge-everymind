@@ -111,3 +111,20 @@ input[type="submit"]:hover{
 .signup_link a:hover{
   text-decoration: underline;
 }
+.alerta {
+  background-color: #f44336;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.erro {
+  background-color: #ff9999;
+  border: 1px solid #ff0000;
+  padding: 10px;
+  margin: 10px;
+  text-align: center;
+  color: black; /* Cor do texto */
+  font-weight: bold; /* Texto em negrito */
+  opacity: 70%;
+}
