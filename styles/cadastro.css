@@ -107,11 +107,13 @@ input[type="submit"] {
   font-weight: 700;
   cursor: pointer;
   outline: none;
+  transition: background-color 0.3s, border-color 0.3s, transform 0.2s;
 }
 
 input[type="submit"]:hover {
-  border-color: #2691d9;
-  transition: .5s;
+  background: #1c7dbf; /* Cor de fundo alterada ao passar o mouse */
+  border-color: #1c7dbf; /* Cor da borda alterada ao passar o mouse */
+  transform: scale(1.05); /* Efeito de escala ao passar o mouse */
 }
 
 .signup_link {

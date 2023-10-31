@@ -82,7 +82,18 @@ form .txt_field{
 .pass:hover{
   text-decoration: underline;
 }
-input[type="submit"]{
+
+.voltar{
+  margin: -5px 0 20px 5px;
+  color: black;
+  cursor: pointer;
+  text-align: center;
+
+}
+.voltar:hover{
+  text-decoration: underline;
+}
+input[type="submit"] {
   width: 100%;
   height: 50px;
   border: 1px solid;
@@ -93,10 +104,13 @@ input[type="submit"]{
   font-weight: 700;
   cursor: pointer;
   outline: none;
+  transition: background-color 0.3s, border-color 0.3s, transform 0.2s;
 }
-input[type="submit"]:hover{
-  border-color: #2691d9;
-  transition: .5s;
+
+input[type="submit"]:hover {
+  background: #1c7dbf; /* Cor de fundo alterada ao passar o mouse */
+  border-color: #1c7dbf; /* Cor da borda alterada ao passar o mouse */
+  transform: scale(1.05); /* Efeito de escala ao passar o mouse */
 }
 .signup_link{
   margin: 30px 0;
@@ -127,4 +141,32 @@ input[type="submit"]:hover{
   color: black; /* Cor do texto */
   font-weight: bold; /* Texto em negrito */
   opacity: 70%;
+}
+
+.pass a:link {
+  color: #2691d9; /* Cor padrão para links não visitados */
+  text-decoration: none; /* Remova o sublinhado */
+}
+
+.pass a:visited {
+  color: #2691d9; /* Cor para links visitados */
+  text-decoration: none; /* Remova o sublinhado para links visitados */
+}
+
+.pass a:hover {
+  text-decoration: underline; /* Adicione sublinhado apenas ao passar o mouse */
+}
+
+.voltar a:link {
+  color: black; /* Cor padrão para links não visitados */
+  text-decoration: none; /* Remova o sublinhado */
+}
+
+.voltar a:visited {
+  color: black; /* Cor para links visitados */
+  text-decoration: none; /* Remova o sublinhado para links visitados */
+}
+
+.voltar a:hover {
+  text-decoration: underline; /* Adicione sublinhado apenas ao passar o mouse */
 }

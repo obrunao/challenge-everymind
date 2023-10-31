@@ -5,7 +5,7 @@ body {
     height: 100vh;
     margin: 0;
     font-family: 'Poppins', sans-serif;
-    background-color: #e2efe6;
+    background-color: #F4F7F5;
 }
 
 .container {
@@ -25,6 +25,12 @@ h2 {
     color: black;
 }
 
+h4{
+    font-size: 15px;
+    font-weight: normal;
+    
+}
+
 form {
     text-align: left;
 }
@@ -34,6 +40,7 @@ form {
 }
 
 label {
+    font-weight: bold;
     display: block;
     font-size: 16px;
     margin-bottom: 5px;
@@ -48,8 +55,9 @@ input, textarea, select {
 }
 
 input[type="submit"] {
-    background: #00a7b6;
-    color: #fff;
+    background: #343434;
+    font-weight: bold;
+    color: white;
     cursor: pointer;
     padding: 10px 20px;
     border: none;

@@ -6,7 +6,7 @@ html {
     padding: 0;
     width: 100%;
     height: 100%;
-    background-color: #e2efe6;
+    background-color: #F4F7F5;
     font-family: 'Poppins', sans-serif;
     overflow-x: hidden;
 
@@ -15,7 +15,7 @@ html {
 #menu {
     height: 100%;
     position: fixed;
-    background-color: #00a7b6;
+    background-color: #5f4def;
     width: 300px;
     transition: 1000ms all cubic-bezier(0.19, 1, 0.22, 1);
     transform: translateX(-100%);
@@ -112,7 +112,8 @@ ul li a {
 }
 
 ul li:hover {
-    background-color: #7effbe;
+    text-decoration: underline;
+  
 }
 
 h2 {
@@ -124,8 +125,6 @@ h2 {
     font-weight: 100;
     text-align: center;
 }
-
-
 
 
 h1 {
@@ -142,9 +141,10 @@ p {
     /* Espaço superior para separar do título */
 }
 
+
 /* Adicione estilos inline para os cards */
 .vaga {
-    background-color: #f9f9f9;
+    background-color: white;
     border: 1px solid #ddd;
     border-radius: 10px;
     padding: 20px;
@@ -173,11 +173,20 @@ p {
 }
 
 h2 {
-    text-align: center; 
-    font-size: 28px; 
+    text-align: center;
+    font-size: 28px;
     color: black;
     padding: 3%;
+    margin-bottom: 5px; /* Ajuste a margem inferior do h2 */
 }
+
+h4 {
+    font-size: 15px;
+    text-align: center;
+    margin-top: 5px; /* Ajuste a margem superior do h4 */
+    margin-left: 55px;
+}
+
 
 /* Estilos do filtro */
 .filtro-vulnerabilidade {
@@ -190,7 +199,6 @@ h2 {
     color: #333;
 }
 
-ul li:last-child:hover {
-    background-color: #ff0000; /* Cor vermelha no hover */
+ul li.logout-item:hover {
+    background-color: #ff0000; 
 }
-

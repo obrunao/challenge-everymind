@@ -23,6 +23,31 @@ app.use(session({
 app.set('view engine', 'ejs'); // Configura o mecanismo de visualização EJS
 app.set('views', path.join(__dirname, 'views'));
 
+app.get('/pagina-inicial', (req, res) => {
+  res.sendFile('pagina-inicial.html', { root: path.join(__dirname, 'views') });
+});
+
+app.get('/styles/bootstrap.css', (req, res) => {
+  res.setHeader('Content-Type', 'text/css');
+  res.sendFile('bootstrap.css', { root: path.join(__dirname, 'styles') });
+});
+
+app.get('/styles/fontawesome-all.css', (req, res) => {
+  res.setHeader('Content-Type', 'text/css');
+  res.sendFile('fontawesome-all.css', { root: path.join(__dirname, 'styles') });
+});
+
+app.get('/styles/swiper.css', (req, res) => {
+  res.setHeader('Content-Type', 'text/css');
+  res.sendFile('swiper.css', { root: path.join(__dirname, 'styles') });
+});
+
+app.get('/styles/magnific-popup.css', (req, res) => {
+  res.setHeader('Content-Type', 'text/css');
+  res.sendFile('magnific-popup.css', { root: path.join(__dirname, 'styles') });
+});
+
+
 app.get('/cadastro', (req, res) => {
   res.sendFile('cadastro.html', { root: path.join(__dirname, 'views') });
 });
@@ -106,6 +131,12 @@ app.get('/styles/login.css', (req, res) => {
   res.setHeader('Content-Type', 'text/css');
   res.sendFile('login.css', { root: path.join(__dirname, 'styles') });
 });
+
+app.get('/styles/styles.css', (req, res) => {
+  res.setHeader('Content-Type', 'text/css');
+  res.sendFile('styles.css', { root: path.join(__dirname, 'styles') });
+});
+
 
 app.post('/login', (req, res) => {
   const email = req.body.email;

@@ -6,7 +6,7 @@ html {
     padding: 0;
     width: 100%;
     height: 100%;
-    background-color: #e2efe6;
+    background-color: #F4F7F5;
     font-family: 'Poppins', sans-serif;
     overflow-x: hidden;
 
@@ -15,7 +15,7 @@ html {
 #menu {
     height: 100%;
     position: fixed;
-    background-color: #00a7b6;
+    background-color: #5f4def;
     width: 300px;
     transition: 1000ms all cubic-bezier(0.19, 1, 0.22, 1);
     transform: translateX(-100%);
@@ -112,7 +112,7 @@ ul li a {
 }
 
 ul li:hover {
-    background-color: #7effbe;
+    text-decoration: underline;
 }
 
 h2 {
@@ -191,8 +191,9 @@ h2 {
 }
 
 .agendar-entrevista-button {
-    background-color: #3498db; 
-    color: #ffffff; 
+    background-color: #343434;
+    color: white; 
+    font-weight: bold;
     border: none; 
     padding: 10px 20px; 
     cursor: pointer; 
@@ -203,5 +204,5 @@ h2 {
 }
 
 ul li:last-child:hover {
-    background-color: #ff0000; /* Cor vermelha no hover */
+    background-color: #ff0000; 
 }
