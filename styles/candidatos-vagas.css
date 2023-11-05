@@ -190,8 +190,8 @@ h2 {
     color: #333;
 }
 
-.fase-button {
-    background-color: #343434; 
+.avancar-fase {
+    background-color: #0f6400; 
     color: white; 
     font-weight: bold;
     border: none; 
@@ -207,8 +207,6 @@ ul li:last-child:hover {
     background-color: #ff0000; 
 }
 
-
-
 .excluir-candidato{
     background-color: #ff0000; 
     color: white; 
@@ -221,3 +219,4 @@ ul li:last-child:hover {
     margin-top: 6%;
     font-size: 16px;
 }
+

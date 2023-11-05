@@ -6,7 +6,6 @@
     <title>Everymind - Empresa</title>
     <link rel="stylesheet" href="../styles/candidatos-vagas.css">
     <link rel="icon" type="image/png" href="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" id="icon">
-
 </head>
 
 <body>
@@ -28,9 +27,9 @@
     </div>
     <div class="container">
         <h2>Vagas Candidatadas</h2>
-        <% if (candidaturas.length> 0) { %>
+        <% if (candidaturas.length > 0) { %>
             <ul class="vagas-list">
-                <% candidaturas.forEach((candidatura)=> { %>
+                <% candidaturas.forEach((candidatura) => { %>
                     <li class="vaga" data-vulnerabilidade="<%= candidatura.vulnerabilidade %>">
                         <img src="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" alt="Ícone da Vaga"
                             style="width: 50px; height: 50px;">
@@ -52,17 +51,19 @@
                             </p>
                             <p>
                                 <span>
+                                    <button class="avancar-fase" data-candidatura-id="<%= candidatura.userId %>"
+                                        data-vaga-id="<%= candidatura.vagaId %>">Avançar para a Próxima Fase</button>
                                     <button class="excluir-candidato" data-candidatura-id="<%= candidatura.userId %>"
-                                        data-vaga-id="<%= candidatura.vagaId %>">Excluir Candidato</button>
+                                        data-vaga-id="<%= candidatura.vagaId %>">Excluir Candidato</button> 
                                 </span>
                             </p>
                         </div>
                     </li>
-                    <% }); %>
+                <% }); %>
             </ul>
-            <% } else { %>
-                <p>Você ainda não recebeu nenhuma candidatura.</p>
-                <% } %>
+        <% } else { %>
+            <p>Você ainda não recebeu nenhuma candidatura.</p>
+        <% } %>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -93,21 +94,27 @@
 
                 window.requestAnimationFrame(svgCurve);
             }
-
         });
 
         $(document).ready(function () {
             $('.excluir-candidato').on('click', function () {
                 const candidaturaId = $(this).data('candidatura-id');
-                const vagaId = $(this).data('vaga-id'); // Obtém o vagaId associado ao botão clicado
+                const vagaId = $(this).data('vaga-id');
 
                 $.post(`/excluir-candidato/${candidaturaId}/${vagaId}`, function (data) {
-                    // Ação após a exclusão (por exemplo, recarregar a página)
-                    location.reload(); // Recarrega a página após a exclusão
+                    location.reload();
+                });
+            });
+
+            $('.avancar-fase').on('click', function () {
+                const candidaturaId = $(this).data('candidatura-id');
+                const vagaId = $(this).data('vaga-id');
+
+                $.post(`/avancar-fase/${candidaturaId}/${vagaId}`, function (data) {
+                    location.reload();
                 });
             });
         });
-
     </script>
 </body>
 

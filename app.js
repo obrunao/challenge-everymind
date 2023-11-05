@@ -401,7 +401,7 @@ app.post('/vagas-disponiveis/:id', (req, res) => {
     }
 
     db.run(
-      'INSERT INTO candidaturas (user_id, vaga_id, estado) VALUES (?, ?, "Testes")',
+      'INSERT INTO candidaturas (user_id, vaga_id, estado) VALUES (?, ?, "Nenhuma")',
       [userId, vagaId],
       function (err) {
         if (err) {
@@ -449,22 +449,38 @@ app.get('/candidatos-vagas', (req, res) => {
   });
 });
 
-app.post('/candidatos-vagas/atualizar-etapa/:id', (req, res) => {
-  // Lógica para atualizar a etapa da candidatura deve estar aqui
-  const candidaturaId = req.params.id;
-  const novaEtapa = req.body.etapa;
+app.post('/avancar-fase/:candidaturaId/:vagaId', (req, res) => {
+  const candidaturaId = req.params.candidaturaId;
+  const vagaId = req.params.vagaId;
 
-  // Atualize a etapa no banco de dados para a candidatura com o ID especificado
-  db.run('UPDATE candidaturas SET etapa = ? WHERE id = ?', [novaEtapa, candidaturaId], function (err) {
-      if (err) {
-          console.error('Erro ao atualizar a etapa da candidatura:', err);
-          res.status(500).send('Erro ao atualizar a etapa da candidatura.');
-      } else {
-          console.log('Etapa da candidatura atualizada com sucesso:', novaEtapa);
-          res.status(200).send('Etapa da candidatura atualizada com sucesso.');
-      }
+  const sql = 'UPDATE candidaturas SET estado = ? WHERE user_id = ? AND vaga_id = ?';
+  const fases = ['Teste', 'Entrevista', 'Feedback']; // Defina as fases na ordem desejada
+
+  db.get('SELECT estado FROM candidaturas WHERE user_id = ? AND vaga_id = ?', [candidaturaId, vagaId], (err, row) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).send('Erro ao avançar para a próxima fase.');
+    } else if (row && row.estado !== fases[fases.length - 1]) {
+      // Verifique se a fase atual não é a última fase
+      const faseIndex = fases.indexOf(row.estado);
+      const próximaFase = fases[faseIndex + 1];
+
+      db.run(sql, [próximaFase, candidaturaId, vagaId], (err) => {
+        if (err) {
+          console.error(err.message);
+          res.status(500).send('Erro ao avançar para a próxima fase.');
+        } else {
+          console.log(`Candidato com ID ${candidaturaId} avançou para a fase: ${próximaFase}`);
+          res.status(200).send(`Candidato avançou para a fase: ${próximaFase}`);
+        }
+      });
+    } else {
+      // A candidatura está na última fase, não é possível avançar mais.
+      res.status(400).send('A candidatura já está na última fase.');
+    }
   });
 });
+
 
 app.post('/excluir-candidato/:candidaturaId/:vagaId', (req, res) => {
   const candidaturaId = req.params.candidaturaId; // Obtém o ID da candidatura a ser excluída
