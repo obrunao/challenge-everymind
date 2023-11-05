@@ -124,7 +124,7 @@ app.get('/teste', (req, res) => {
 
 app.get('/login', (req, res) => {
   const erro = req.query.erro;
-  res.render('login', {erro})
+  res.render('login', { erro })
   //res.sendFile('login.html', { root: path.join(__dirname, 'views') });
 });
 app.get('/styles/login.css', (req, res) => {
@@ -269,7 +269,7 @@ app.post('/cadastrar-vaga', (req, res) => {
           }
           console.log(`Vaga cadastrada com sucesso, ID: ${vagaId}`);
           console.log(`Relacionamento criado na tabela user_vagas.`);
-          
+
           res.redirect('/vagas-cadastradas');
         }
       );
@@ -307,8 +307,8 @@ app.get('/styles/vagas-cadastradas.css', (req, res) => {
 
 
 
-app.get('/entrevistas-candidato', (req, res) => {
-  res.sendFile('entrevistas-candidato.html', { root: path.join(__dirname, 'views') });
+app.get('/testes-candidato', (req, res) => {
+  res.sendFile('testes-candidato.html', { root: path.join(__dirname, 'views') });
 });
 
 
@@ -326,6 +326,7 @@ db.serialize(() => {
       id INTEGER PRIMARY KEY,
       user_id INTEGER,
       vaga_id INTEGER,
+      estado TEXT, 
       FOREIGN KEY (user_id) REFERENCES users(id),
       FOREIGN KEY (vaga_id) REFERENCES vagas(id)
     )
@@ -400,7 +401,7 @@ app.post('/vagas-disponiveis/:id', (req, res) => {
     }
 
     db.run(
-      'INSERT INTO candidaturas (user_id, vaga_id) VALUES (?, ?)',
+      'INSERT INTO candidaturas (user_id, vaga_id, estado) VALUES (?, ?, "Testes")',
       [userId, vagaId],
       function (err) {
         if (err) {
@@ -437,19 +438,68 @@ app.get('/minhas-vagas', (req, res) => {
 
 
 app.get('/candidatos-vagas', (req, res) => {
-  const userId = req.session.userId;
-
-  // Consulte o banco de dados para recuperar informações das vagas onde o usuário se candidatou
-  db.all('SELECT v.titulo, u.nomeCompleto, u.localizacao, u.vulnerabilidade FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id JOIN users u ON u.id = c.user_id WHERE c.user_id = ?', [userId], (err, rows) => {
+  // Consulte o banco de dados para recuperar informações de todas as vagas candidatas, incluindo o ID da vaga
+  db.all('SELECT v.id AS vagaId, v.titulo, u.nomeCompleto, u.localizacao, u.vulnerabilidade, c.estado, u.id AS userId FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id JOIN users u ON u.id = c.user_id', (err, rows) => {
     if (err) {
       console.error(err.message);
       return res.status(500).send('Erro ao buscar informações de candidaturas.');
     }
 
     res.render('candidatos-vagas', { candidaturas: rows, nomeUsuario: req.session.nomeUsuario });
-
   });
 });
+
+app.post('/candidatos-vagas/atualizar-etapa/:id', (req, res) => {
+  // Lógica para atualizar a etapa da candidatura deve estar aqui
+  const candidaturaId = req.params.id;
+  const novaEtapa = req.body.etapa;
+
+  // Atualize a etapa no banco de dados para a candidatura com o ID especificado
+  db.run('UPDATE candidaturas SET etapa = ? WHERE id = ?', [novaEtapa, candidaturaId], function (err) {
+      if (err) {
+          console.error('Erro ao atualizar a etapa da candidatura:', err);
+          res.status(500).send('Erro ao atualizar a etapa da candidatura.');
+      } else {
+          console.log('Etapa da candidatura atualizada com sucesso:', novaEtapa);
+          res.status(200).send('Etapa da candidatura atualizada com sucesso.');
+      }
+  });
+});
+
+app.post('/excluir-candidato/:candidaturaId/:vagaId', (req, res) => {
+  const candidaturaId = req.params.candidaturaId; // Obtém o ID da candidatura a ser excluída
+  const vagaId = req.params.vagaId; // Obtém o ID da vaga associada à candidatura
+
+  console.log(`ID da candidatura a ser excluída: ${candidaturaId}`);
+  console.log(`ID da vaga associada à candidatura: ${vagaId}`);
+
+  // Implemente a lógica para verificar se a candidatura com o candidaturaId está associada à vaga com o vagaId
+  // Você deve executar uma consulta SQL para verificar a associação.
+
+  const sql = 'SELECT user_id FROM candidaturas WHERE user_id = ? AND vaga_id = ?';
+
+  db.get(sql, [candidaturaId, vagaId], (err, row) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).send('Erro ao verificar a associação da candidatura.');
+    } else if (row) {
+      // A associação entre candidaturaId e vagaId foi encontrada, agora você pode excluir o candidato
+      db.run('DELETE FROM candidaturas WHERE user_id = ? AND vaga_id = ?', [candidaturaId, vagaId], (err) => {
+        if (err) {
+          console.error(err.message);
+          res.status(500).send('Erro ao excluir o candidato.');
+        } else {
+          console.log(`Candidato com ID ${candidaturaId} associado à vaga com ID ${vagaId} excluído com sucesso.`);
+          res.status(200).send('Candidato excluído com sucesso.');
+        }
+      });
+    } else {
+      // A associação não foi encontrada, o que significa que o candidato não está associado à vaga especificada
+      res.status(400).send('A candidatura não está associada à vaga especificada.');
+    }
+  });
+});
+
 
 
 app.listen(port, () => {

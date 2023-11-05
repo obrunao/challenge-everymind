@@ -22,7 +22,7 @@
                 <li><a href="/vagas-cadastradas">Vagas Cadastradas</a></li>
                 <li><a href="/candidatos-vagas">Candidatos</a></li>
                 <li><a href="/dashboard-empresa">Dashboard</a></li>
-                <li><a href="/login" class="logout-link">Logout</a></li>
+                <li><a href="/login" class="Sair-link">Sair</a></li>
             </ul>
         </div>
     </div>
@@ -47,11 +47,16 @@
                             <p><span class="campo">Vulnerabilidade:</span>
                                 <%= candidatura.vulnerabilidade %>
                             </p>
+                            <p><span class="campo">Fase:</span>
+                                <%= candidatura.estado %>
+                            </p>
+                            <p>
+                                <span>
+                                    <button class="excluir-candidato" data-candidatura-id="<%= candidatura.userId %>"
+                                        data-vaga-id="<%= candidatura.vagaId %>">Excluir Candidato</button>
+                                </span>
+                            </p>
                         </div>
-                      
-                        <form method="post" action="">
-                            <button type="submit" class="agendar-entrevista-button">Agendar Entrevista</button>
-                        </form>
                     </li>
                     <% }); %>
             </ul>
@@ -59,6 +64,7 @@
                 <p>Você ainda não recebeu nenhuma candidatura.</p>
                 <% } %>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
@@ -88,10 +94,20 @@
                 window.requestAnimationFrame(svgCurve);
             }
 
-            // Aqui, estamos pegando o nome do usuário da sessão e definindo-o no elemento HTML
-            var nomeUsuario = "<%= nomeUsuario %>"; // Certifique-se de que a sessão esteja configurada corretamente
-            document.getElementById('nomeUsuario').textContent = "Bem-vindo, " + nomeUsuario + "!";
         });
+
+        $(document).ready(function () {
+            $('.excluir-candidato').on('click', function () {
+                const candidaturaId = $(this).data('candidatura-id');
+                const vagaId = $(this).data('vaga-id'); // Obtém o vagaId associado ao botão clicado
+
+                $.post(`/excluir-candidato/${candidaturaId}/${vagaId}`, function (data) {
+                    // Ação após a exclusão (por exemplo, recarregar a página)
+                    location.reload(); // Recarrega a página após a exclusão
+                });
+            });
+        });
+
     </script>
 </body>
 
