@@ -239,20 +239,21 @@ app.post('/cadastrar-vaga', (req, res) => {
   // Primeiro, obtenha o ID do usuário da sessão
   const userId = req.session.userId;
 
-
-
   const titulo = req.body.titulo;
   const descricao = req.body.descricao;
   const salario = req.body.salario;
-  const vulnerabilidade = req.body.vulnerabilidade;
+  const vulnerabilidades = req.body.vulnerabilidade; // Renomeado para 'vulnerabilidades'
   const tipo_trabalho = req.body.tipo_trabalho;
   const localizacao = req.body.localizacao;
   const competencias = req.body.competencias;
 
+  // Transforme a lista de vulnerabilidades em uma string separada por vírgulas
+  const vulnerabilidadesString = vulnerabilidades.join(', ');
+
   // Inserir os dados da vaga no banco de dados SQLite
   db.run(
     'INSERT INTO vagas (titulo, descricao, salario, vulnerabilidade, tipo_trabalho, localizacao, competencias) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    [titulo, descricao, salario, vulnerabilidade, tipo_trabalho, localizacao, competencias],
+    [titulo, descricao, salario, vulnerabilidadesString, tipo_trabalho, localizacao, competencias],
     function (err) {
       if (err) {
         return console.error(err.message);
