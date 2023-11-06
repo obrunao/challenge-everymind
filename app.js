@@ -20,6 +20,8 @@ app.use(session({
   saveUninitialized: true
 }));
 
+
+
 app.set('view engine', 'ejs'); // Configura o mecanismo de visualização EJS
 app.set('views', path.join(__dirname, 'views'));
 
@@ -307,12 +309,6 @@ app.get('/styles/vagas-cadastradas.css', (req, res) => {
 
 
 
-
-app.get('/testes-candidato', (req, res) => {
-  res.sendFile('testes-candidato.html', { root: path.join(__dirname, 'views') });
-});
-
-
 app.get('/dashboard-candidato', (req, res) => {
   res.sendFile('dashboard-candidato.html', { root: path.join(__dirname, 'views') });
 });
@@ -557,29 +553,45 @@ app.post('/enviar-feedback/:candidaturaId/:vagaId', (req, res) => {
   const vagaId = req.params.vagaId;
   const feedbackText = req.body.feedbackText;
 
-console.log(candidaturaId)
-console.log(vagaId)
-console.log(feedbackText)
+  console.log(candidaturaId)
+  console.log(vagaId)
+  console.log(feedbackText)
 
   if (!candidaturaId || !vagaId) {
-      res.status(400).send('Parâmetros inválidos');
-      return;
+    res.status(400).send('Parâmetros inválidos');
+    return;
   }
 
   // Atualize a coluna "feedback" na tabela "candidaturas"
   db.run('UPDATE candidaturas SET feedback = ? WHERE user_id = ? AND vaga_id = ?', [feedbackText, candidaturaId, vagaId], (err) => {
-      if (err) {
-          console.error(err.message);
-          res.status(500).send('Erro ao salvar o feedback.');
-      } else {
-          console.log(`Feedback salvo para a candidatura com ID ${candidaturaId}, vaga com ID ${vagaId}.`);
-          res.status(200).send('Feedback salvo com sucesso.');
-      }
+    if (err) {
+      console.error(err.message);
+      res.status(500).send('Erro ao salvar o feedback.');
+    } else {
+      console.log(`Feedback salvo para a candidatura com ID ${candidaturaId}, vaga com ID ${vagaId}.`);
+      res.status(200).send('Feedback salvo com sucesso.');
+    }
   });
 });
 
+app.get('/testes-candidato', (req, res) => {
+  // Primeiro, obtenha o ID do usuário da sessão
+  const userId = req.session.userId;
 
+  if (!userId) {
+    return res.status(403).redirect('/login');
+  }
 
+  // Consulte o banco de dados para recuperar as vagas às quais o usuário se candidatou
+  db.all('SELECT v.*, c.estado FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id WHERE c.user_id = ?', [userId], (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send('Erro ao buscar vagas.');
+    }
+
+    res.render('testes-candidato', { vagas: rows });
+  });
+});
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
 });

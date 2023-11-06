@@ -37,16 +37,16 @@
                             <%= candidatura.titulo %>
                         </h3>
                         <div class="vaga-info">
-                            <p><span class="campo">Nome:</span>
+                            <p><span class="campo">Nome: </span>
                                 <%= candidatura.nomeCompleto %>
                             </p>
-                            <p><span class="campo">Localização:</span>
+                            <p><span class="campo">Localização: </span>
                                 <%= candidatura.localizacao %>
                             </p>
-                            <p><span class="campo">Vulnerabilidade:</span>
+                            <p><span class="campo">Vulnerabilidade: </span>
                                 <%= candidatura.vulnerabilidade %>
                             </p>
-                            <p><span class="campo">Fase:</span>
+                            <p><span class="campo">Fase: </span>
                                 <%= candidatura.estado %>
                             </p>
                             <p>
@@ -59,7 +59,7 @@
                                 <span>
                                     <p>
                                         <% if (candidatura.estado==='Entrevista' ) { %>
-                                            <span class="campo">Data da Entrevista:</span>
+                                            <span class="campo">Data da Entrevista: </span>
                                             <input type="date" class="data-entrevista input-data-entrevista"
                                                 data-candidatura-id="<%= candidatura.userId %>"
                                                 data-vaga-id="<%= candidatura.vagaId %>"

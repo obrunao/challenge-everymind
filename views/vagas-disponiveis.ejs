@@ -20,9 +20,9 @@
                 <li><a href="/perfil">Perfil</a></li>
                 <li><a href="/vagas-disponiveis">Vagas Disponíveis</a></li>
                 <li><a href="/minhas-vagas">Minhas Vagas</a></li>
-                <li><a href="/testes-candidato">Entrevistas</a></li>
+                <li><a href="/testes-candidato">Testes</a></li>
                 <li><a href="/dashboard-candidato">Dashboard</a></li>
-                <li class="Sair-item"><a href="/login">Sair</a></li>
+                <li><a href="/login">Sair</a></li>
             </ul>
         </div>
     </div>
@@ -55,24 +55,24 @@
                             </h3>
                             <div class="vaga-info">
                                 
-                                <p><span class="campo">Descrição:</span>
+                                <p><span class="campo">Descrição: </span>
                                     <%= vaga.descricao %>
                                 </p>
-                                <p><span class="campo">Salário:</span>
+                                <p><span class="campo">Salário: </span>
                                     <%= vaga.salario %>
                                 </p>
-                                <p><span class="campo">Vulnerabilidade:</span>
+                                <p><span class="campo">Vulnerabilidade: </span>
                                     <%= vaga.vulnerabilidade %>
                                 </p>
-                                <p><span class="campo">Tipo de Trabalho:</span>
+                                <p><span class="campo">Tipo de Trabalho: </span>
                                     <%= vaga.tipo_trabalho %>
                                 </p>
-                                <p><span class="campo">Localização:</span>
+                                <p><span class="campo">Localização: </span>
                                     <%= vaga.localizacao %>
                                 </p>
                             </div>
                             <form method="post" action="/vagas-disponiveis/<%= vaga.id %>">
-                                <button type="button" class="aplicar-button">Aplicar</button>
+                                <button type="button" class="teste-button">Realizar Teste</button>
                             </form>
                         </li>
                         <% }); %>
