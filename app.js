@@ -537,7 +537,7 @@ app.post('/agendar-entrevista/:candidaturaId/:vagaId', (req, res) => {
   console.log(dataEntrevista);
 
 
-  db.run('UPDATE candidaturas SET data_entrevista = ? WHERE id = ? AND vaga_id = ?', [dataEntrevista, candidaturaId, vagaId], (err) => {
+  db.run('UPDATE candidaturas SET data_entrevista = ? WHERE user_id = ? AND vaga_id = ?', [dataEntrevista, candidaturaId, vagaId], (err) => {
     if (err) {
       console.error(err.message);
       res.status(500).send('Erro ao inserir Data.');
@@ -550,6 +550,32 @@ app.post('/agendar-entrevista/:candidaturaId/:vagaId', (req, res) => {
 });
 
 
+
+app.post('/enviar-feedback/:candidaturaId/:vagaId', (req, res) => {
+  const candidaturaId = req.params.candidaturaId;
+  const vagaId = req.params.vagaId;
+  const feedbackText = req.body.feedbackText;
+
+console.log(candidaturaId)
+console.log(vagaId)
+console.log(feedbackText)
+
+  if (!candidaturaId || !vagaId) {
+      res.status(400).send('Parâmetros inválidos');
+      return;
+  }
+
+  // Atualize a coluna "feedback" na tabela "candidaturas"
+  db.run('UPDATE candidaturas SET feedback = ? WHERE user_id = ? AND vaga_id = ?', [feedbackText, candidaturaId, vagaId], (err) => {
+      if (err) {
+          console.error(err.message);
+          res.status(500).send('Erro ao salvar o feedback.');
+      } else {
+          console.log(`Feedback salvo para a candidatura com ID ${candidaturaId}, vaga com ID ${vagaId}.`);
+          res.status(200).send('Feedback salvo com sucesso.');
+      }
+  });
+});
 
 
 

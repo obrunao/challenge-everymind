@@ -150,9 +150,9 @@ p {
     padding: 20px;
     margin: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 30%; 
+    width: 30%;
     display: inline-block;
-    vertical-align: top; 
+    vertical-align: top;
 }
 
 .vaga h3 {
@@ -173,16 +173,16 @@ p {
 }
 
 h2 {
-    text-align: center; 
-    font-size: 28px; 
+    text-align: center;
+    font-size: 28px;
     color: black;
     padding: 3%;
 }
 
 /* Estilos do filtro */
 .filtro-vulnerabilidade {
-    text-align: center; 
-    margin: 20px 0; 
+    text-align: center;
+    margin: 20px 0;
 }
 
 .filtro-vulnerabilidade label {
@@ -191,55 +191,118 @@ h2 {
 }
 
 .avancar-fase {
-    background-color: #0f6400; 
-    color: white; 
+    background-color: #0f6400;
+    color: white;
     font-weight: bold;
-    border: none; 
-    padding: 10px 20px; 
-    cursor: pointer; 
-    border-radius: 5px; 
-    transition: background-color 0.3s; 
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
     margin-top: 6%;
     font-size: 16px;
 }
 
 ul li:last-child:hover {
-    background-color: #ff0000; 
+    background-color: #ff0000;
 }
 
-.excluir-candidato{
-    background-color: #ff0000; 
-    color: white; 
+.excluir-candidato {
+    background-color: #ff0000;
+    color: white;
     font-weight: bold;
-    border: none; 
-    padding: 10px 20px; 
-    cursor: pointer; 
-    border-radius: 5px; 
-    transition: background-color 0.3s; 
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
     margin-top: 6%;
     font-size: 16px;
 }
+
+.enviar-feedback {
+    background-color: #7ab2ff;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    margin-top: 6%;
+    font-size: 16px;
+}
+
 .input-data-entrevista {
     /* Adicione estilos personalizados aqui */
-    width: 150px; /* Define a largura desejada */
-    height: 30px; /* Define a altura desejada */
-    padding: 5px; /* Define o preenchimento desejado */
-    border: 1px solid #ccc; /* Define uma borda */
-    border-radius: 5px; /* Adiciona cantos arredondados */
-    font-size: 14px; /* Define o tamanho da fonte */
+    width: 150px;
+    /* Define a largura desejada */
+    height: 30px;
+    /* Define a altura desejada */
+    padding: 5px;
+    /* Define o preenchimento desejado */
+    border: 1px solid #ccc;
+    /* Define uma borda */
+    border-radius: 5px;
+    /* Adiciona cantos arredondados */
+    font-size: 14px;
+    /* Define o tamanho da fonte */
 }
 
 
 
-.agendar-entrevista{
-    background-color: #7ab2ff; 
-    color: white; 
+.agendar-entrevista {
+    background-color: #7ab2ff;
+    color: white;
     font-weight: bold;
-    border: none; 
-    padding: 10px 20px; 
-    cursor: pointer; 
-    border-radius: 5px; 
-    transition: background-color 0.3s; 
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    margin-top: 6%;
+    font-size: 16px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 500px;
+    background-color: #fff;
+    padding: 20px;
+    padding-right: 3%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#feedbackModal textarea {
+    min-width: 300px;
+    padding: 10px;
+}
+
+#submitFeedback {
+    background-color:  #0f6400;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
     margin-top: 6%;
     font-size: 16px;
 }
