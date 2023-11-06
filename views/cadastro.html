@@ -9,6 +9,17 @@
 </head>
 
 <body>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
     <div class="center">
         <h1>Cadastro</h1>
         <form id="cadastro-form" method="post">
@@ -28,14 +39,14 @@
             </div>
             <div class="txt_field">
                 <select id="vulnerabilidades" name="vulnerabilidades" multiple required>
-                    <option >Selecione suas vulnerabilidades</option>
+                    <option>Selecione suas vulnerabilidades</option>
                     <option value="LGBTQIA+">LGBTQIA+</option>
                     <option value="Baixa Renda">Baixa Renda</option>
                     <option value="Mulher">Mulher</option>
                     <option value="PCD">PCD</option>
                     <option value="Negro(a)">Negro(a)</option>
                 </select>
-                
+
             </div>
             <div class="txt_field">
                 <input type="email" name="email" required placeholder="E-mail">

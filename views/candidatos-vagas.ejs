@@ -9,11 +9,22 @@
 </head>
 
 <body>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
     <div id="menu">
         <div class="hamburger">
             <div class="line"></div>
             <div class="line"></div>
-            <div class "line"></div>
+            <div class="line"></div>
         </div>
         <div class="menu-inner">
             <ul>
@@ -163,7 +174,7 @@
 
                     console.log(candidaturaId)
                     console.log(vagaId)
-                    
+
 
                     // Configure o modal para incluir os IDs da vaga e da candidatura
                     $('#submitFeedback').data('candidatura-id', candidaturaId);
@@ -182,7 +193,7 @@
                     const vagaId = $(this).data('vaga-id');
                     const feedbackText = $('#feedbackText').val();
 
-                    
+
                     console.log(candidaturaId)
                     console.log(vagaId)
                     console.log(feedbackText)

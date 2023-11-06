@@ -1,14 +1,27 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
     <meta charset="utf-8">
     <title>Everymind - Empresa</title>
     <link rel="stylesheet" href="../styles/vagas-cadastradas.css">
     <link rel="icon" type="image/png" href="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" id="icon">
 
-   
+
 </head>
+
 <body>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
     <div id="menu">
         <div class="hamburger">
             <div class="line"></div>
@@ -46,25 +59,38 @@
                 </select>
             </div>
 
-            <% if (vagas.length > 0) { %>
+            <% if (vagas.length> 0) { %>
                 <ul class="vagas-list">
-                    <% vagas.forEach((vaga) => { %>
+                    <% vagas.forEach((vaga)=> { %>
                         <li class="vaga" data-vulnerabilidade="<%= vaga.vulnerabilidade %>">
-                            <img src="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" alt="Ícone da Vaga" style="width: 50px; height: 50px;">
-                            <h3><%= vaga.titulo %></h3>
+                            <img src="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" alt="Ícone da Vaga"
+                                style="width: 50px; height: 50px;">
+                            <h3>
+                                <%= vaga.titulo %>
+                            </h3>
                             <div class="vaga-info">
-                                <p><span class="campo">Descrição: </span> <%= vaga.descricao %></p>
-                                <p><span class="campo">Salário: </span> <%= vaga.salario %></p>
-                                <p><span class="campo">Vulnerabilidade: </span> <%= vaga.vulnerabilidade %></p>
-                                <p><span class="campo">Tipo de Trabalho: </span> <%= vaga.tipo_trabalho %></p>
-                                <p><span class="campo">Localização: </span> <%= vaga.localizacao %></p>
+                                <p><span class="campo">Descrição: </span>
+                                    <%= vaga.descricao %>
+                                </p>
+                                <p><span class="campo">Salário: </span>
+                                    <%= vaga.salario %>
+                                </p>
+                                <p><span class="campo">Vulnerabilidade: </span>
+                                    <%= vaga.vulnerabilidade %>
+                                </p>
+                                <p><span class="campo">Tipo de Trabalho: </span>
+                                    <%= vaga.tipo_trabalho %>
+                                </p>
+                                <p><span class="campo">Localização: </span>
+                                    <%= vaga.localizacao %>
+                                </p>
                             </div>
                         </li>
-                    <% }); %>
+                        <% }); %>
                 </ul>
-            <% } else { %>
-                <p>Nenhuma vaga cadastrada.</p>
-            <% } %>
+                <% } else { %>
+                    <p>Nenhuma vaga cadastrada.</p>
+                    <% } %>
         </div>
     </div>
 
@@ -89,14 +115,14 @@
             $('#filtro-vulnerabilidade').on('change', function () {
                 var filtroVulnerabilidade = $(this).val();
 
-        
+
                 $('.vaga').hide();
 
-            
+
                 if (filtroVulnerabilidade === '') {
                     $('.vaga').show();
                 } else {
-                    
+
                     $('.vaga[data-vulnerabilidade="' + filtroVulnerabilidade + '"]').show();
                 }
             });
@@ -104,4 +130,5 @@
         });
     </script>
 </body>
+
 </html>

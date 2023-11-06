@@ -7,10 +7,20 @@
     <link rel="stylesheet" href="../styles/candidato.css">
     <link rel="icon" type="image/png" href="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" id="icon">
 
-   
+
 </head>
 
 <body>
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
     <div id="menu">
         <div class="hamburger">
             <div class="line"></div>
@@ -31,7 +41,10 @@
     <div class="content">
         <div class="container">
             <h2>Dashboard</h2>
-            <iframe title="EveryMind" width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=25cc18b0-7f19-4b5f-8933-4755a7267c58&autoAuth=true&ctid=11dbbfe2-89b8-4549-be10-cec364e59551" frameborder="0" allowFullScreen="true"></iframe>        </div>
+            <iframe title="EveryMind" width="1140" height="541.25"
+                src="https://app.powerbi.com/reportEmbed?reportId=25cc18b0-7f19-4b5f-8933-4755a7267c58&autoAuth=true&ctid=11dbbfe2-89b8-4549-be10-cec364e59551"
+                frameborder="0" allowFullScreen="true"></iframe>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
     <meta charset="utf-8">
     <title>Everymind - Empresa</title>
@@ -14,12 +15,25 @@
             background: url('https://i.ibb.co/J7RWzph/pexels-sora-shimazaki-5673502.jpg') center center no-repeat;
             background-size: cover;
             font-family: 'Poppins', sans-serif;
-         
-            color: white; /* Define a cor do texto como branco para melhor legibilidade na imagem de fundo */
+
+            color: white;
+            /* Define a cor do texto como branco para melhor legibilidade na imagem de fundo */
         }
     </style>
 </head>
+
 <body>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
     <div id="menu">
         <div class="hamburger">
             <div class="line"></div>
@@ -39,7 +53,8 @@
 
     <div class="content">
         <div class="container">
-            <p>Essa é a página principal da empresa. Aqui você pode ver suas informações, cadastrar vagas, visualizar vagas cadastradas, entrevistas marcadas e muito mais.</p>
+            <p>Essa é a página principal da empresa. Aqui você pode ver suas informações, cadastrar vagas, visualizar
+                vagas cadastradas, entrevistas marcadas e muito mais.</p>
         </div>
     </div>
 
@@ -78,4 +93,5 @@
         });
     </script>
 </body>
+
 </html>
