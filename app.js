@@ -326,7 +326,8 @@ db.serialize(() => {
       id INTEGER PRIMARY KEY,
       user_id INTEGER,
       vaga_id INTEGER,
-      estado TEXT, 
+      estado TEXT,
+      data_entrevista DATE,
       FOREIGN KEY (user_id) REFERENCES users(id),
       FOREIGN KEY (vaga_id) REFERENCES vagas(id)
     )
@@ -368,6 +369,8 @@ app.post('/login', (req, res) => {
     });
   }
 });
+
+
 
 // 2. Atualize a rota para processar o envio da candidatura
 app.get('/vagas-disponiveis', (req, res) => {
@@ -438,8 +441,8 @@ app.get('/minhas-vagas', (req, res) => {
 
 
 app.get('/candidatos-vagas', (req, res) => {
-  // Consulte o banco de dados para recuperar informações de todas as vagas candidatas, incluindo o ID da vaga
-  db.all('SELECT v.id AS vagaId, v.titulo, u.nomeCompleto, u.localizacao, u.vulnerabilidade, c.estado, u.id AS userId FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id JOIN users u ON u.id = c.user_id', (err, rows) => {
+  // Consulte o banco de dados para recuperar informações de todas as vagas candidatas, incluindo o ID da vaga e a data da entrevista
+  db.all('SELECT v.id AS vagaId, v.titulo, u.nomeCompleto, u.localizacao, u.vulnerabilidade, c.estado, c.data_entrevista, u.id AS userId FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id JOIN users u ON u.id = c.user_id', (err, rows) => {
     if (err) {
       console.error(err.message);
       return res.status(500).send('Erro ao buscar informações de candidaturas.');
@@ -482,6 +485,8 @@ app.post('/avancar-fase/:candidaturaId/:vagaId', (req, res) => {
 });
 
 
+
+
 app.post('/excluir-candidato/:candidaturaId/:vagaId', (req, res) => {
   const candidaturaId = req.params.candidaturaId; // Obtém o ID da candidatura a ser excluída
   const vagaId = req.params.vagaId; // Obtém o ID da vaga associada à candidatura
@@ -515,6 +520,36 @@ app.post('/excluir-candidato/:candidaturaId/:vagaId', (req, res) => {
     }
   });
 });
+
+
+
+app.post('/agendar-entrevista/:candidaturaId/:vagaId', (req, res) => {
+  const candidaturaId = req.params.candidaturaId;
+  const dataEntrevista = req.body.dataEntrevista;
+  const vagaId = req.params.vagaId;
+
+  if (!candidaturaId || !vagaId) {
+    res.status(400).send('Parâmetros inválidos');
+    return;
+  }
+  console.log(candidaturaId);
+  console.log(vagaId);
+  console.log(dataEntrevista);
+
+
+  db.run('UPDATE candidaturas SET data_entrevista = ? WHERE id = ? AND vaga_id = ?', [dataEntrevista, candidaturaId, vagaId], (err) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).send('Erro ao inserir Data.');
+    } else {
+      console.log(`Entrevista marcada para ${dataEntrevista} associado à vaga com ID ${vagaId} e usuario ${candidaturaId}.`);
+      res.status(200).send('Candidato agendado com sucesso.');
+    }
+  });
+
+});
+
+
 
 
 

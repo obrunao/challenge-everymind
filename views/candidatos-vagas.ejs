@@ -13,7 +13,7 @@
         <div class="hamburger">
             <div class="line"></div>
             <div class="line"></div>
-            <div class="line"></div>
+            <div class "line"></div>
         </div>
         <div class="menu-inner">
             <ul>
@@ -27,9 +27,9 @@
     </div>
     <div class="container">
         <h2>Vagas Candidatadas</h2>
-        <% if (candidaturas.length > 0) { %>
+        <% if (candidaturas.length> 0) { %>
             <ul class="vagas-list">
-                <% candidaturas.forEach((candidatura) => { %>
+                <% candidaturas.forEach((candidatura)=> { %>
                     <li class="vaga" data-vulnerabilidade="<%= candidatura.vulnerabilidade %>">
                         <img src="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" alt="Ícone da Vaga"
                             style="width: 50px; height: 50px;">
@@ -49,23 +49,41 @@
                             <p><span class="campo">Fase:</span>
                                 <%= candidatura.estado %>
                             </p>
+                            <p><span> <button class="avancar-fase" data-candidatura-id="<%= candidatura.userId %>"
+                                        data-vaga-id="<%= candidatura.vagaId %>">Avançar para a Próxima
+                                        Fase</button></span></p>
                             <p>
                                 <span>
-                                    <button class="avancar-fase" data-candidatura-id="<%= candidatura.userId %>"
-                                        data-vaga-id="<%= candidatura.vagaId %>">Avançar para a Próxima Fase</button>
-                                    <button class="excluir-candidato" data-candidatura-id="<%= candidatura.userId %>"
-                                        data-vaga-id="<%= candidatura.vagaId %>">Excluir Candidato</button> 
+
+                                    <p>
+                                       
+                                        <% if (candidatura.estado==='Entrevista' ) { %>
+                                            <span class="campo">Data da Entrevista:</span>
+                                            <input type="date" class="data-entrevista input-data-entrevista"
+                                                data-candidatura-id="<%= candidatura.userId %>"
+                                                data-vaga-id="<%= candidatura.vagaId %>"
+                                                data-candidatura-data-entrevista="<%= candidatura.dataEntrevista %>">
+                                            <button class="agendar-entrevista"
+                                                data-candidatura-id="<%= candidatura.userId %>"
+                                                data-vaga-id="<%= candidatura.vagaId %>"
+                                                data-candidatura-data-entrevista="<%= candidatura.dataEntrevista %>">Agendar
+                                                Entrevista</button>
+                                            <% } %>
+                                    </p>
+                                </span>
+
+                                <button class="excluir-candidato" data-candidatura-id="<%= candidatura.userId %>"
+                                    data-vaga-id="<%= candidatura.vagaId %>">Excluir Candidato</button>
                                 </span>
                             </p>
                         </div>
                     </li>
-                <% }); %>
+                    <% }); %>
             </ul>
-        <% } else { %>
-            <p>Você ainda não recebeu nenhuma candidatura.</p>
-        <% } %>
+            <% } else { %>
+                <p>Você ainda não recebeu nenhuma candidatura.</p>
+                <% } %>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
@@ -112,6 +130,18 @@
 
                 $.post(`/avancar-fase/${candidaturaId}/${vagaId}`, function (data) {
                     location.reload();
+                });
+            });
+
+            $('.agendar-entrevista').on('click', function () {
+                const candidaturaId = $(this).data('candidatura-id');
+                const vagaId = $(this).data('vaga-id');
+                const dataEntrevista = $('.data-entrevista[data-candidatura-id="' + candidaturaId + '"]').val();
+                console.log('candidaturaId:', candidaturaId);
+                console.log('vagaId:', vagaId);
+                console.log('dataEntrevista:', dataEntrevista);
+                $.post(`/agendar-entrevista/${candidaturaId}/${vagaId}`, { dataEntrevista: dataEntrevista }, function (data) {
+                    location.reload(); // Atualize a página após agendar a entrevista
                 });
             });
         });
