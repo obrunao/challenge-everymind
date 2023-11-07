@@ -5,6 +5,7 @@ const session = require('express-session');
 const path = require('path');
 const app = express();
 const bodyParser = require('body-parser');
+const { log } = require('console');
 const sqlite3 = require('sqlite3').verbose();
 const port = process.env.PORT || 3000;
 
@@ -324,6 +325,7 @@ db.serialize(() => {
       user_id INTEGER,
       vaga_id INTEGER,
       estado TEXT,
+      status_teste TEXT DEFAULT "Pendente" NOT NULL,
       data_entrevista DATE,
       FOREIGN KEY (user_id) REFERENCES users(id),
       FOREIGN KEY (vaga_id) REFERENCES vagas(id)
@@ -438,8 +440,8 @@ app.get('/minhas-vagas', (req, res) => {
 
 
 app.get('/candidatos-vagas', (req, res) => {
-  // Consulte o banco de dados para recuperar informações de todas as vagas candidatas, incluindo o ID da vaga e a data da entrevista
-  db.all('SELECT v.id AS vagaId, v.titulo, u.nomeCompleto, u.localizacao, u.vulnerabilidade, c.estado, c.data_entrevista, u.id AS userId FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id JOIN users u ON u.id = c.user_id', (err, rows) => {
+  // Consulte o banco de dados para recuperar informações de todas as vagas candidatas, incluindo o ID da vaga, a data da entrevista e o status_teste
+  db.all('SELECT v.id AS vagaId, v.titulo, u.nomeCompleto, u.localizacao, u.vulnerabilidade, c.estado, c.data_entrevista,c.status_teste, u.id AS userId, c.status_teste FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id JOIN users u ON u.id = c.user_id', (err, rows) => {
     if (err) {
       console.error(err.message);
       return res.status(500).send('Erro ao buscar informações de candidaturas.');
@@ -574,6 +576,7 @@ app.post('/enviar-feedback/:candidaturaId/:vagaId', (req, res) => {
   });
 });
 
+
 app.get('/testes-candidato', (req, res) => {
   // Primeiro, obtenha o ID do usuário da sessão
   const userId = req.session.userId;
@@ -582,8 +585,7 @@ app.get('/testes-candidato', (req, res) => {
     return res.status(403).redirect('/login');
   }
 
-  // Consulte o banco de dados para recuperar as vagas às quais o usuário se candidatou
-  db.all('SELECT v.*, c.estado FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id WHERE c.user_id = ?', [userId], (err, rows) => {
+  db.all('SELECT v.*, c.estado, c.user_id AS candidaturaId, c.status_teste FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id WHERE c.user_id = ?', [userId], (err, rows) => {
     if (err) {
       console.error(err.message);
       return res.status(500).send('Erro ao buscar vagas.');
@@ -592,6 +594,28 @@ app.get('/testes-candidato', (req, res) => {
     res.render('testes-candidato', { vagas: rows });
   });
 });
+
+
+app.post('/realizar-teste/:candidaturaId/:vagaId', (req, res) => {
+  const vagaId = req.params.candidaturaId;
+  const candidaturaId = req.params.vagaId;
+  const statusTeste = "Realizado";
+
+  db.run('UPDATE candidaturas SET status_teste = ? WHERE user_id = ? AND vaga_id = ?', [statusTeste, candidaturaId, vagaId], (err) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).send('Erro ao marcar como Realizado.');
+    } else {
+      console.log(`Teste realizado com sucesso, ID do user: ${candidaturaId}, ID da vaga: ${vagaId}`);
+      res.status(200).send('Teste realizado com sucesso.');
+      
+    }
+  });
+});
+
+
+
+
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
 });

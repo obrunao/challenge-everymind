@@ -45,7 +45,7 @@
                 <ul class="vagas-list">
 
                     <% vagas.forEach((vaga)=> { %>
-                        <% if (vaga.estado==='Teste' ) { %>
+                        <% if (vaga.estado==='Teste' && vaga.status_teste != 'Realizado') { %>
                             <li class="vaga" data-vulnerabilidade="<%= vaga.vulnerabilidade %>">
                                 <img src="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" alt="Ícone da Vaga"
                                     style="width: 50px; height: 50px;">
@@ -68,10 +68,15 @@
                                     <p><span class="campo">Localização: </span>
                                         <%= vaga.localizacao %>
                                     </p>
+                                    <p><span class="campo">vagaID: </span>
+                                        <%= vaga.id %>
+                                    </p>
+                                    <p><span class="campo">candidaturaId: </span>
+                                        <%= vaga.candidaturaId %>
+                                    </p>
                                 </div>
-                                <form method="post" action="/vagas-disponiveis/<%= vaga.id %>">
-                                    <button type="button" class="teste-button" onclick="realizarTeste">Realizar
-                                        Teste</button>
+                                <form method="post" action="/realizar-teste/<%= vaga.candidaturaId %>/<%= vaga.id %>">
+                                    <button type="button" class="teste-button" onclick="realizarTeste('<%= vaga.candidaturaId %>', '<%= vaga.id %>')">Realizar Teste</button>
                                 </form>
                             </li>
                             <% } %>
@@ -117,9 +122,27 @@
 
         });
 
+        function realizarTeste(vagaId, candidaturaId) {
+            var confirmacao = confirm("Tem certeza de que deseja realizar o teste?");
+            console.log(candidaturaId);
+            console.log(vagaId);
+           
+            if (confirmacao) {
+                $.post(`/realizar-teste/${candidaturaId}/${vagaId}`, function (data) {
+                    if (data === 'Teste realizado com sucesso!') {
+                        alert('Teste realizado com sucesso!');
+                        location.reload(); // Recarregue a página
+                        console.log(confirmacao);
+                    }
+                })
+                    .fail(function (error) {
+                        alert('Erro ao realizar o teste.');
+                    });
+            }
+        }
 
 
-
+        
 
 
     </script>

@@ -60,7 +60,13 @@
                             <p><span class="campo">Fase: </span>
                                 <%= candidatura.estado %>
                             </p>
-                            <p>
+
+                            <% if (candidatura.estado === 'Teste') { %>
+                                <p><span class="campo">Status do Teste: </span>
+                                    <%= candidatura.status_teste %>
+                                </p>
+                            <% } %>
+                          
                                 <span>
                                     <button class="avancar-fase" data-candidatura-id="<%= candidatura.userId %>"
                                         data-vaga-id="<%= candidatura.vagaId %>">Avançar para a Próxima Fase</button>
