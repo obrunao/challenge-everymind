@@ -41,7 +41,7 @@
     </div>
     <div class="content">
         <div class="container">
-            <h2>Testes Disponíveis</h2>
+            <h2>Devolutiva das Minhas Vagas</h2>
 
             <% if (vagas.length> 0) { %>
                 <ul class="vagas-list">
@@ -104,19 +104,7 @@
                 $(this).parent().removeClass('expanded');
             });
 
-            // Adicione um evento de alteração no menu suspenso
-            $('#filtro-vulnerabilidade').on('change', function () {
-                var filtroVulnerabilidade = $(this).val();
-
-                $('.vaga').hide();
-
-                if (filtroVulnerabilidade === '') {
-                    $('.vaga').show();
-                } else {
-                    $('.vaga[data-vulnerabilidade="' + filtroVulnerabilidade + '"]').show();
-                }
-            });
-
+           
 
         });
 
