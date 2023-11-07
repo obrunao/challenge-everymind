@@ -441,7 +441,7 @@ app.get('/minhas-vagas', (req, res) => {
 
 app.get('/candidatos-vagas', (req, res) => {
   // Consulte o banco de dados para recuperar informações de todas as vagas candidatas, incluindo o ID da vaga, a data da entrevista e o status_teste
-  db.all('SELECT v.id AS vagaId, v.titulo, u.nomeCompleto, u.localizacao, u.vulnerabilidade, c.estado, c.data_entrevista,c.status_teste, u.id AS userId, c.status_teste FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id JOIN users u ON u.id = c.user_id', (err, rows) => {
+  db.all('SELECT v.id AS vagaId, v.titulo, u.nomeCompleto, u.localizacao, u.vulnerabilidade, c.estado, c.data_entrevista,c.status_teste, c.status_entrevista, u.id AS userId, c.status_teste FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id JOIN users u ON u.id = c.user_id', (err, rows) => {
     if (err) {
       console.error(err.message);
       return res.status(500).send('Erro ao buscar informações de candidaturas.');
@@ -555,14 +555,24 @@ app.post('/enviar-feedback/:candidaturaId/:vagaId', (req, res) => {
   const vagaId = req.params.vagaId;
   const feedbackText = req.body.feedbackText;
 
-  console.log(candidaturaId)
-  console.log(vagaId)
-  console.log(feedbackText)
+  console.log(candidaturaId);
+  console.log(vagaId);
+  console.log(feedbackText);
 
   if (!candidaturaId || !vagaId) {
     res.status(400).send('Parâmetros inválidos');
     return;
   }
+
+ 
+  db.run('UPDATE candidaturas SET status_feedback = "Enviado" WHERE user_id = ? AND vaga_id = ?', [candidaturaId, vagaId], (err) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).send('Erro ao inserir o status de feedback.');
+    } else {
+      console.log(`Status "Enviado" inserido na tabela status_feedback para a candidatura com ID ${candidaturaId}, vaga com ID ${vagaId}.`);
+    }
+  });
 
   // Atualize a coluna "feedback" na tabela "candidaturas"
   db.run('UPDATE candidaturas SET feedback = ? WHERE user_id = ? AND vaga_id = ?', [feedbackText, candidaturaId, vagaId], (err) => {
@@ -614,6 +624,59 @@ app.post('/realizar-teste/:candidaturaId/:vagaId', (req, res) => {
 });
 
 
+app.get('/entrevista-candidato', (req, res) => {
+  // Primeiro, obtenha o ID do usuário da sessão
+  const userId = req.session.userId;
+
+  if (!userId) {
+    return res.status(403).redirect('/login');
+  }
+
+  db.all('SELECT v.*, c.estado, c.user_id AS candidaturaId, c.status_teste, c.data_entrevista, c.status_entrevista FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id WHERE c.user_id = ?', [userId], (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send('Erro ao buscar vagas.');
+    }
+
+    res.render('entrevista-candidato', { vagas: rows });
+  });
+});
+
+
+app.post('/confirmar-entrevista/:candidaturaId/:vagaId', (req, res) => {
+  const vagaId = req.params.candidaturaId;
+  const candidaturaId = req.params.vagaId;
+  const statusEntrevista = "Confirmado";
+
+  db.run('UPDATE candidaturas SET status_entrevista = ? WHERE user_id = ? AND vaga_id = ?', [statusEntrevista, candidaturaId, vagaId], (err) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500).send('Erro ao confirmar entrevista.');
+    } else {
+      console.log(`Entrevista confirmada com sucesso, ID do user: ${candidaturaId}, ID da vaga: ${vagaId}`);
+      res.status(200).send('Entrevista confirmada com sucesso.');
+      
+    }
+  });
+});
+
+app.get('/feedback-candidato', (req, res) => {
+ 
+  const userId = req.session.userId;
+
+  if (!userId) {
+    return res.status(403).redirect('/login');
+  }
+
+  db.all('SELECT v.*, c.estado, c.user_id AS candidaturaId, c.status_teste, c.data_entrevista, c.feedback, c.status_feedback FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id WHERE c.user_id = ?', [userId], (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send('Erro ao buscar vagas.');
+    }
+
+    res.render('feedback-candidato', { vagas: rows });
+  });
+});
 
 
 app.listen(port, () => {

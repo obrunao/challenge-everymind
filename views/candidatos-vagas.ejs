@@ -61,43 +61,63 @@
                                 <%= candidatura.estado %>
                             </p>
 
-                            <% if (candidatura.estado === 'Teste') { %>
+                            <% if (candidatura.estado==='Teste' ) { %>
                                 <p><span class="campo">Status do Teste: </span>
                                     <%= candidatura.status_teste %>
                                 </p>
-                            <% } %>
-                          
-                                <span>
-                                    <button class="avancar-fase" data-candidatura-id="<%= candidatura.userId %>"
-                                        data-vaga-id="<%= candidatura.vagaId %>">Avançar para a Próxima Fase</button>
-                                </span>
-                            </p>
-                            <p>
-                                <span>
-                                    <p>
-                                        <% if (candidatura.estado==='Entrevista' ) { %>
-                                            <span class="campo">Data da Entrevista: </span>
-                                            <input type="date" class="data-entrevista input-data-entrevista"
-                                                data-candidatura-id="<%= candidatura.userId %>"
-                                                data-vaga-id="<%= candidatura.vagaId %>"
-                                                data-candidatura-data-entrevista="<%= candidatura.dataEntrevista %>">
-                                            <button class="agendar-entrevista"
-                                                data-candidatura-id="<%= candidatura.userId %>"
-                                                data-vaga-id="<%= candidatura.vagaId %>"
-                                                data-candidatura-data-entrevista="<%= candidatura.dataEntrevista %>">Agendar
-                                                Entrevista</button>
-                                            <% } else if (candidatura.estado==='Feedback' ) { %>
-                                                <button class="enviar-feedback"
-                                                    data-candidatura-id="<%= candidatura.userId %>"
-                                                    data-vaga-id="<%= candidatura.vagaId %>">Enviar Feedback</button>
+                                <% } else if (candidatura.estado==='Entrevista' ) { %>
+                                    <% if (candidatura.status_entrevista==='Confirmado' ) { %>
+                                        <p><span class="campo">Status da Entrevista: </span>
+                                            <%= candidatura.status_entrevista %>
+                                        </p>
+                                        <p><span class="campo">Data da Entrevista: </span>
+                                            <%= candidatura.data_entrevista %>
+                                        </p>
+                                        <% } else { %>
+                                            <p><span class="campo">Status da Entrevista: </span>
+                                                <%= candidatura.status_entrevista %>
+                                            </p>
+                                            <% if (candidatura.status_entrevista !=='Confirmado' ) { %>
+                                                <p><span class="campo">Data da Entrevista: </span>
+                                                    <%= candidatura.data_entrevista %>
+                                                </p>
+                    
+                                                <p>
+
+                                                    <span class="campo">Agendar Entrevista: </span>
+                                                    <input type="datetime-local"
+                                                        class="data-entrevista input-data-entrevista"
+                                                        data-candidatura-id="<%= candidatura.userId %>"
+                                                        data-vaga-id="<%= candidatura.vagaId %>"
+                                                        data-candidatura-data-entrevista="<%= candidatura.dataEntrevista %>">
+                                                    <button class="agendar-entrevista"
+                                                        data-candidatura-id="<%= candidatura.userId %>"
+                                                        data-vaga-id="<%= candidatura.vagaId %>"
+                                                        data-candidatura-data-entrevista="<%= candidatura.dataEntrevista %>">Agendar
+                                                        Entrevista</button>
+                                                </p>
                                                 <% } %>
-                                    </p>
-                                </span>
-                            </p>
-                            <p><span>
-                                    <button class="excluir-candidato" data-candidatura-id="<%= candidatura.userId %>"
-                                        data-vaga-id="<%= candidatura.vagaId %>">Excluir Candidato</button>
-                                </span></p>
+                                                    <% } %>
+                                                        <% } else if (candidatura.estado==='Feedback' ) { %>
+                                                            <button class="enviar-feedback"
+                                                                data-candidatura-id="<%= candidatura.userId %>"
+                                                                data-vaga-id="<%= candidatura.vagaId %>">Enviar
+                                                                Feedback</button>
+                                                            <% } %>
+                                                                <% if (candidatura.estado !=='Feedback' ) { %>
+                                                                    <span>
+                                                                        <button class="avancar-fase"
+                                                                            data-candidatura-id="<%= candidatura.userId %>"
+                                                                            data-vaga-id="<%= candidatura.vagaId %>">Avançar
+                                                                            para a Próxima Fase</button>
+                                                                    </span>
+                                                                    <% } %>
+                                                                        <p><span>
+                                                                                <button class="excluir-candidato"
+                                                                                    data-candidatura-id="<%= candidatura.userId %>"
+                                                                                    data-vaga-id="<%= candidatura.vagaId %>">Excluir
+                                                                                    Candidato</button>
+                                                                            </span></p>
                         </div>
                     </li>
                     <% }); %>
@@ -106,7 +126,6 @@
                 <p>Você ainda não recebeu nenhuma candidatura.</p>
                 <% } %>
     </div>
-
     <div class="modal" id="feedbackModal">
         <div class="modal-content">
             <span class="close" id="closeModal">&times;</span>
