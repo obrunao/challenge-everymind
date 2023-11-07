@@ -441,7 +441,7 @@ app.get('/minhas-vagas', (req, res) => {
 
 app.get('/candidatos-vagas', (req, res) => {
   // Consulte o banco de dados para recuperar informações de todas as vagas candidatas, incluindo o ID da vaga, a data da entrevista e o status_teste
-  db.all('SELECT v.id AS vagaId, v.titulo, u.nomeCompleto, u.localizacao, u.vulnerabilidade, c.estado, c.data_entrevista,c.status_teste, c.status_entrevista, u.id AS userId, c.status_teste FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id JOIN users u ON u.id = c.user_id', (err, rows) => {
+  db.all('SELECT v.id AS vagaId, v.titulo, u.nomeCompleto, u.localizacao, u.vulnerabilidade, c.estado, c.data_entrevista,c.status_teste, c.status_entrevista, v.tipo_trabalho ,u.id AS userId, c.status_teste FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id JOIN users u ON u.id = c.user_id', (err, rows) => {
     if (err) {
       console.error(err.message);
       return res.status(500).send('Erro ao buscar informações de candidaturas.');

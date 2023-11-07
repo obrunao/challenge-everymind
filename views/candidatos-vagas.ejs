@@ -36,12 +36,36 @@
             </ul>
         </div>
     </div>
+    <h2>Vagas Candidatadas</h2>
+    <div class="filtro-vulnerabilidade">
+        <label for="filtro-vulnerabilidade">Filtrar por Vulnerabilidade:</label>
+        <select id="filtro-vulnerabilidade" multiple>
+            <option value="">Todas</option>
+            <option value="LGBTQIA+">LGBTQIA+</option>
+            <option value="Baixa Renda">Baixa Renda</option>
+            <option value="Mulher">Mulher</option>
+            <option value="PCD">PCD</option>
+            <option value="Negro(a)">Negro(a)</option>
+        </select>
+
+        <div class="filtro-tipo-trabalho">
+            <label for="filtro-tipo-trabalho">Tipo de Trabalho:</label>
+            <select id="filtro-tipo-trabalho">
+                <option value="">Todos</option>
+                <option value="Home Office">Home Office</option>
+                <option value="Híbrido">Híbrido</option>
+                <option value="Presencial">Presencial</option>
+            </select>
+        </div>
+    </div>
+
     <div class="container">
-        <h2>Vagas Candidatadas</h2>
+
         <% if (candidaturas.length> 0) { %>
             <ul class="vagas-list">
                 <% candidaturas.forEach((candidatura)=> { %>
-                    <li class="vaga" data-vulnerabilidade="<%= candidatura.vulnerabilidade %>">
+                    <li class="vaga" data-vulnerabilidade="<%= candidatura.vulnerabilidade %>"
+                        data-tipo-trabalho="<%= candidatura.tipo_trabalho %>">
                         <img src="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" alt="Ícone da Vaga"
                             style="width: 50px; height: 50px;">
                         <h3>
@@ -81,7 +105,7 @@
                                                 <p><span class="campo">Data da Entrevista: </span>
                                                     <%= candidatura.data_entrevista %>
                                                 </p>
-                    
+
                                                 <p>
 
                                                     <span class="campo">Agendar Entrevista: </span>
@@ -137,6 +161,30 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
         <script>
+            // Adicione um evento de alteração no filtro de Tipo de Trabalho
+            $('#filtro-tipo-trabalho').on('change', function () {
+                var filtroTipoTrabalho = $(this).val();
+                $('.vaga').hide();
+
+                if (filtroTipoTrabalho === '') {
+                    $('.vaga').show();
+                } else {
+                    $('.vaga[data-tipo-trabalho="' + filtroTipoTrabalho + '"]').show();
+                }
+            });
+
+            $('#filtro-vulnerabilidade').on('change', function () {
+                var selectedVulnerabilities = $('#filtro-vulnerabilidade').val();
+                $('.vaga').hide();
+
+                if (selectedVulnerabilities.length === 0) {
+                    $('.vaga').show();
+                } else {
+                    selectedVulnerabilities.forEach(function (vulnerability) {
+                        $('.vaga[data-vulnerabilidade*="' + vulnerability + '"]').show();
+                    });
+                }
+            });
             $(document).ready(function () {
                 var menuExpanded = false;
                 var hamburger = $('.hamburger');

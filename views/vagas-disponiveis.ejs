@@ -9,7 +9,6 @@
 </head>
 
 <body>
-
     <div vw class="enabled">
         <div vw-access-button class="active"></div>
         <div vw-plugin-wrapper>
@@ -40,12 +39,11 @@
     <div class="content">
         <div class="container">
             <h2>Vagas Disponíveis</h2>
-            <h4>Nesta seção, você encontrará uma lista de vagas de
-                emprego atualmente disponíveis. Explore uma variedade de oportunidades
-                de carreira em diferentes setores e locais.</h4>
+            <h4>Nesta seção, você encontrará uma lista de vagas de emprego atualmente disponíveis. Explore uma variedade
+                de oportunidades de carreira em diferentes setores e locais.</h4>
             <div class="filtro-vulnerabilidade">
                 <label for="filtro-vulnerabilidade">Filtrar por Vulnerabilidade:</label>
-                <select id="filtro-vulnerabilidade">
+                <select id="filtro-vulnerabilidade" multiple>
                     <option value="">Todas</option>
                     <option value="LGBTQIA+">LGBTQIA+</option>
                     <option value="Baixa Renda">Baixa Renda</option>
@@ -53,19 +51,31 @@
                     <option value="PCD">PCD</option>
                     <option value="Negro(a)">Negro(a)</option>
                 </select>
+
+                <div class="filtro-tipo-trabalho">
+                    <label for="filtro-tipo-trabalho">Tipo de Trabalho:</label>
+                    <select id="filtro-tipo-trabalho">
+                        <option value="">Todos</option>
+                        <option value="Home Office">Home Office</option>
+                        <option value="Híbrido">Híbrido</option>
+                        <option value="Presencial">Presencial</option>
+                    </select>
+                </div>
             </div>
 
-            <% if (vagas.length> 0) { %>
+           
+
+            <% if (vagas.length > 0) { %>
                 <ul class="vagas-list">
-                    <% vagas.forEach((vaga)=> { %>
-                        <li class="vaga" data-vulnerabilidade="<%= vaga.vulnerabilidade %>">
+                    <% vagas.forEach((vaga, index) => { %>
+                        <li class="vaga" data-vulnerabilidade="<%= vaga.vulnerabilidade %>"
+                            data-tipo-trabalho="<%= vaga.tipo_trabalho %>" >
                             <img src="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" alt="Ícone da Vaga"
                                 style="width: 50px; height: 50px;">
                             <h3>
                                 <%= vaga.titulo %>
                             </h3>
                             <div class="vaga-info">
-
                                 <p><span class="campo">Descrição: </span>
                                     <%= vaga.descricao %>
                                 </p>
@@ -86,26 +96,23 @@
                                 <button type="button" class="aplicar-button">Aplicar</button>
                             </form>
                         </li>
-                        <% }); %>
+                    <% }); %>
                 </ul>
-                <% } else { %>
-                    <p>Nenhuma vaga cadastrada.</p>
-                    <% } %>
+            <% } else { %>
+                <p>Nenhuma vaga cadastrada.</p>
+            <% } %>
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <script>
         $(document).ready(function () {
             var menuExpanded = false;
             var hamburger = $('.hamburger');
-
             $('.hamburger, .menu-inner').on('mouseenter', function () {
                 $(this).parent().addClass('expanded');
                 menuExpanded = true;
             });
-
             $('.menu-inner').on('mouseleave', function () {
                 menuExpanded = false;
                 $(this).parent().removeClass('expanded');
@@ -113,21 +120,37 @@
 
             // Adicione um evento de alteração no menu suspenso
             $('#filtro-vulnerabilidade').on('change', function () {
-                var filtroVulnerabilidade = $(this).val();
-
+                var selectedVulnerabilities = $('#filtro-vulnerabilidade').val();
                 $('.vaga').hide();
 
-                if (filtroVulnerabilidade === '') {
+                if (selectedVulnerabilities.length === 0) {
                     $('.vaga').show();
                 } else {
-                    $('.vaga[data-vulnerabilidade="' + filtroVulnerabilidade + '"]').show();
+                    selectedVulnerabilities.forEach(function (vulnerability) {
+                        $('.vaga[data-vulnerabilidade*="' + vulnerability + '"]').show();
+                    });
                 }
             });
+
+            // Adicione um evento de alteração no filtro de Tipo de Trabalho
+            $('#filtro-tipo-trabalho').on('change', function () {
+                var selectedTipoTrabalho = $('#filtro-tipo-trabalho').val();
+                $('.vaga').hide();
+
+                if (selectedTipoTrabalho === '') {
+                    $('.vaga').show();
+                } else {
+                    $('.vaga[data-tipo-trabalho="' + selectedTipoTrabalho + '"]').show();
+                }
+            });
+
+          
+
+           
 
             // Adicione um evento de clique para os botões de aplicação
             $('.aplicar-button').on('click', function () {
                 var confirmacao = confirm("Tem certeza de que deseja se candidatar a esta vaga?");
-
                 // Se o usuário confirmar, envie o formulário
                 if (confirmacao) {
                     $(this).parent().submit();

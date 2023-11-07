@@ -6,8 +6,6 @@
     <title>Everymind - Empresa</title>
     <link rel="stylesheet" href="../styles/vagas-cadastradas.css">
     <link rel="icon" type="image/png" href="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" id="icon">
-
-
 </head>
 
 <body>
@@ -42,14 +40,13 @@
     <div class="content">
         <div class="container">
             <h2>Vagas Cadastradas</h2>
-            <h4>Nesta área, você pode visualizar as vagas de emprego
-                que foram cadastradas e estão disponíveis para os candidatos. Esta seção
-                permite à empresa listar e gerenciar todas as oportunidades de emprego
-                disponíveis, facilitando o processo de recrutamento e seleção de
-                talentos.</h4>
+            <h4>Nesta área, você pode visualizar as vagas de emprego que foram cadastradas e estão disponíveis para os
+                candidatos. Esta seção permite à empresa listar e gerenciar todas as oportunidades de emprego
+                disponíveis, facilitando o processo de recrutamento e seleção de talentos.</h4>
+
             <div class="filtro-vulnerabilidade">
                 <label for="filtro-vulnerabilidade">Filtrar por Vulnerabilidade:</label>
-                <select id="filtro-vulnerabilidade">
+                <select id="filtro-vulnerabilidade" multiple>
                     <option value="">Todas</option>
                     <option value="LGBTQIA+">LGBTQIA+</option>
                     <option value="Baixa Renda">Baixa Renda</option>
@@ -57,12 +54,24 @@
                     <option value="PCD">PCD</option>
                     <option value="Negro(a)">Negro(a)</option>
                 </select>
+
+                <div class="filtro-tipo-trabalho">
+                    <label for="filtro-tipo-trabalho">Tipo de Trabalho:</label>
+                    <select id="filtro-tipo-trabalho">
+                        <option value="">Todos</option>
+                        <option value="Home Office">Home Office</option>
+                        <option value="Híbrido">Híbrido</option>
+                        <option value="Presencial">Presencial</option>
+                    </select>
+                </div>
+
             </div>
 
             <% if (vagas.length> 0) { %>
                 <ul class="vagas-list">
                     <% vagas.forEach((vaga)=> { %>
-                        <li class="vaga" data-vulnerabilidade="<%= vaga.vulnerabilidade %>">
+                        <li class="vaga" data-vulnerabilidade="<%= vaga.vulnerabilidade %>"
+                            data-tipo-trabalho="<%= vaga.tipo_trabalho %>">
                             <img src="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" alt="Ícone da Vaga"
                                 style="width: 50px; height: 50px;">
                             <h3>
@@ -85,6 +94,7 @@
                                     <%= vaga.localizacao %>
                                 </p>
                             </div>
+
                         </li>
                         <% }); %>
                 </ul>
@@ -111,22 +121,32 @@
                 $(this).parent().removeClass('expanded');
             });
 
-            // Adicione um evento de alteração no menu suspenso
+            // Adicione um evento de alteração no filtro de Vulnerabilidade
             $('#filtro-vulnerabilidade').on('change', function () {
-                var filtroVulnerabilidade = $(this).val();
-
-
+                var selectedVulnerabilities = $('#filtro-vulnerabilidade').val();
                 $('.vaga').hide();
 
-
-                if (filtroVulnerabilidade === '') {
+                if (selectedVulnerabilities.length === 0) {
                     $('.vaga').show();
                 } else {
-
-                    $('.vaga[data-vulnerabilidade="' + filtroVulnerabilidade + '"]').show();
+                    selectedVulnerabilities.forEach(function (vulnerability) {
+                        $('.vaga[data-vulnerabilidade*="' + vulnerability + '"]').show();
+                    });
                 }
             });
 
+
+            // Adicione um evento de alteração no filtro de Tipo de Trabalho
+            $('#filtro-tipo-trabalho').on('change', function () {
+                var filtroTipoTrabalho = $(this).val();
+                $('.vaga').hide();
+
+                if (filtroTipoTrabalho === '') {
+                    $('.vaga').show();
+                } else {
+                    $('.vaga[data-tipo-trabalho="' + filtroTipoTrabalho + '"]').show();
+                }
+            });
         });
     </script>
 </body>

@@ -202,3 +202,44 @@ h4 {
 ul li.Sair-item:hover {
     background-color: #ff0000; 
 }
+
+.filtros {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.filtro-vulnerabilidade,
+.filtro-tipo-trabalho {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1%;
+}
+
+.filtro-vulnerabilidade label,
+.filtro-tipo-trabalho label {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.filtro-vulnerabilidade select,
+.filtro-tipo-trabalho select {
+    width: 100%;
+    max-width: 300px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    color: #333;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.filtro-vulnerabilidade select option,
+.filtro-tipo-trabalho select option {
+    padding: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
