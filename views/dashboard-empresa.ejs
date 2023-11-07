@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>Everymind - Empresa</title>
+    <link rel="stylesheet" href="../styles/candidato.css">
+    <link rel="icon" type="image/png" href="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" id="icon">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+    <div id="menu">
+        <div class="hamburger">
+            <div class="line"></div>
+            <div class "line"></div>
+            <div class="line"></div>
+        </div>
+        <div class="menu-inner">
+            <ul>
+                <li><a href="/cadastrar-vaga">Cadastrar Vaga</a></li>
+                <li><a href="/vagas-cadastradas">Vagas Cadastradas</a></li>
+                <li><a href="/candidatos-vagas">Candidatos</a></li>
+                <li><a href="/dashboard-empresa">Dashboard</a></li>
+                <li><a href="/login">Sair</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="container">
+            <h1>Dashboard da Empresa</h1>
+            <p>Número total de usuários cadastrados: <%= totalUsuarios %></p>
+            <p>Número total de vagas cadastradas: <%= totalVagas %></p>
+            <canvas id="usuariosChart" width="400" height="200"></canvas>
+            <canvas id="vagasChart" width="400" height="200"></canvas>
+            <script>
+                // Obtenha os dados de total de usuários e vagas do seu back-end
+                const totalUsuarios = <%= totalUsuarios %>;
+                const totalVagas = <%= totalVagas %>;
+                
+                // Selecione os elementos canvas
+                const usuariosChartCanvas = document.getElementById('usuariosChart');
+                const vagasChartCanvas = document.getElementById('vagasChart');
+                
+                // Crie os gráficos
+                const usuariosChart = new Chart(usuariosChartCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Total de Usuários'],
+                        datasets: [{
+                            label: 'Total de Usuários',
+                            data: [totalUsuarios],
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+                
+                const vagasChart = new Chart(vagasChartCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Total de Vagas'],
+                        datasets: [{
+                            label: 'Total de Vagas',
+                            data: [totalVagas],
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            </script>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="seuarquivo.js"></script>
+</body>
+</html>

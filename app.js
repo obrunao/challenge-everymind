@@ -186,9 +186,7 @@ app.get('/candidato-pagina-inicial', (req, res) => {
 
 
 
-app.get('/dashboard', (req, res) => {
-  res.sendFile('dashboard.html', { root: path.join(__dirname, 'views') });
-});
+
 
 app.get('/entrevistas', (req, res) => {
   res.sendFile('entrevistas.html', { root: path.join(__dirname, 'views') });
@@ -314,21 +312,53 @@ app.get('/dashboard-candidato', (req, res) => {
   res.sendFile('dashboard-candidato.html', { root: path.join(__dirname, 'views') });
 });
 
+
 app.get('/dashboard-empresa', (req, res) => {
-  res.sendFile('dashboard-empresa.html', { root: path.join(__dirname, 'views') });
+
+  // Consulta SQL para contar o número de usuários cadastrados
+  const queryUsuarios = 'SELECT COUNT(*) AS totalUsuarios FROM users';
+
+  // Consulta SQL para contar o número de vagas cadastradas
+  const queryVagas = 'SELECT COUNT(*) AS totalVagas FROM vagas';
+
+  db.get(queryUsuarios, (errUsuarios, rowUsuarios) => {
+    if (errUsuarios) {
+      console.error(errUsuarios.message);
+      return res.status(500).send('Erro ao buscar o número de usuários.');
+    }
+
+    const totalUsuarios = rowUsuarios.totalUsuarios;
+
+    db.get(queryVagas, (errVagas, rowVagas) => {
+      if (errVagas) {
+        console.error(errVagas.message);
+        return res.status(500).send('Erro ao buscar o número de vagas.');
+      }
+
+      const totalVagas = rowVagas.totalVagas;
+
+      // Renderizar a página dashboard-empresa.ejs com o número de usuários e vagas
+      res.render('dashboard-empresa', { totalUsuarios, totalVagas });
+
+     
+    });
+  });
 });
+
 
 db.serialize(() => {
   db.run(`
-    CREATE TABLE IF NOT EXISTS candidaturas (
-      id INTEGER PRIMARY KEY,
-      user_id INTEGER,
-      vaga_id INTEGER,
-      estado TEXT,
-      status_teste TEXT DEFAULT "Pendente" NOT NULL,
-      data_entrevista DATE,
-      FOREIGN KEY (user_id) REFERENCES users(id),
-      FOREIGN KEY (vaga_id) REFERENCES vagas(id)
+  CREATE TABLE IF NOT EXISTS candidaturas (
+    id INTEGER PRIMARY KEY,
+    user_id INTEGER,
+    vaga_id INTEGER,
+    estado TEXT,
+    status_teste TEXT DEFAULT "Pendente" NOT NULL,
+    status_entrevista TEXT DEFAULT "Não Confirmado" NOT NULL,
+    status_feedback TEXT DEFAULT "Não Enviado" NOT NULL,
+    data_entrevista DATE,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (vaga_id) REFERENCES vagas(id)
     )
   `);
 });
@@ -564,7 +594,7 @@ app.post('/enviar-feedback/:candidaturaId/:vagaId', (req, res) => {
     return;
   }
 
- 
+
   db.run('UPDATE candidaturas SET status_feedback = "Enviado" WHERE user_id = ? AND vaga_id = ?', [candidaturaId, vagaId], (err) => {
     if (err) {
       console.error(err.message);
@@ -618,7 +648,7 @@ app.post('/realizar-teste/:candidaturaId/:vagaId', (req, res) => {
     } else {
       console.log(`Teste realizado com sucesso, ID do user: ${candidaturaId}, ID da vaga: ${vagaId}`);
       res.status(200).send('Teste realizado com sucesso.');
-      
+
     }
   });
 });
@@ -655,13 +685,13 @@ app.post('/confirmar-entrevista/:candidaturaId/:vagaId', (req, res) => {
     } else {
       console.log(`Entrevista confirmada com sucesso, ID do user: ${candidaturaId}, ID da vaga: ${vagaId}`);
       res.status(200).send('Entrevista confirmada com sucesso.');
-      
+
     }
   });
 });
 
 app.get('/feedback-candidato', (req, res) => {
- 
+
   const userId = req.session.userId;
 
   if (!userId) {
