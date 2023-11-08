@@ -6,7 +6,19 @@
     <title>Everymind - Candidato</title>
     <link rel="stylesheet" href="../styles/candidato.css">
     <link rel="icon" type="image/png" href="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" id="icon">
-
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://i.ibb.co/J7RWzph/pexels-sora-shimazaki-5673502.jpg') center center no-repeat;
+            background-size: cover;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            background-color: rgba(0, 0, 0, 1); /* Altere o último valor (0.5) para ajustar a opacidade */
+        }
+    </style>
 </head>
 
 <body>
@@ -21,7 +33,6 @@
     <script>
         new window.VLibras.Widget('https://vlibras.gov.br/app');
     </script>
-    
     <div id="menu">
         <div class="hamburger">
             <div class="line"></div>
@@ -30,6 +41,7 @@
         </div>
         <div class="menu-inner">
             <ul>
+                <p>Olá, <%= nomeUsuario %> 😜</p>
                 <li><a href="/perfil">Perfil</a></li>
                 <li><a href="/vagas-disponiveis">Vagas Disponíveis</a></li>
                 <li><a href="/minhas-vagas">Minhas Vagas</a></li>
@@ -44,9 +56,8 @@
 
     <div class="content">
         <div class="container">
-            <h2>Meu perfil</h2>
-            <h4>Nesta seção, você pode gerenciar e atualizar suas informações
-                de perfil de usuário</h4>
+            <p>Essa é a página principal do candidato. Aqui você pode ver suas informações, vagas disponíveis, vagas em
+                que você se inscreveu, entrevistas marcadas e muito mais.</p>
         </div>
     </div>
 
@@ -69,16 +80,17 @@
 
             function svgCurve() {
                 if (menuExpanded) {
-
+                    // Lógica para expandir o menu
                 } else {
-
+                    // Lógica para contrair o menu
                 }
+
+                // Outras lógicas conforme necessário
 
                 window.requestAnimationFrame(svgCurve);
             }
         });
     </script>
-
 </body>
 
 </html>

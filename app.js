@@ -141,6 +141,7 @@ app.get('/styles/styles.css', (req, res) => {
 });
 
 
+
 app.post('/login', (req, res) => {
   const email = req.body.email;
   const senha = req.body.senha;
@@ -181,9 +182,9 @@ app.get('/esqueceu-senha', (req, res) => {
 });
 
 app.get('/candidato-pagina-inicial', (req, res) => {
-  res.sendFile('candidato-pagina-inicial.html', { root: path.join(__dirname, 'views') });
+  const nomeUsuario = req.session.nomeUsuario; // Obtenha o nome do usuário da sessão
+  res.render('candidato-pagina-inicial', { nomeUsuario });
 });
-
 
 
 
@@ -194,7 +195,21 @@ app.get('/entrevistas', (req, res) => {
 
 
 app.get('/perfil', (req, res) => {
-  res.sendFile('perfil.html', { root: path.join(__dirname, 'views') });
+  const userId = req.session.userId; // Suponhamos que você armazene o ID do usuário na sessão
+  // Conecte-se ao banco de dados e busque os dados do usuário com base no userId
+  db.get('SELECT * FROM users WHERE id = ?', [userId], (err, row) => {
+    if (err) {
+      return res.status(500).send('Erro ao buscar dados do usuário.');
+    }
+    
+    if (!row) {
+      return res.status(404).send('Usuário não encontrado.');
+    }
+    
+    const { nomeCompleto, telefone, cpf, localizacao, vulnerabilidade, email } = row;
+    
+    res.render('perfil', { nomeCompleto, telefone, cpf, localizacao, vulnerabilidade, email });
+  });
 });
 
 app.get('/empresa-pagina-inicial', (req, res) => {
@@ -246,15 +261,14 @@ app.post('/cadastrar-vaga', (req, res) => {
   const vulnerabilidades = req.body.vulnerabilidade; // Renomeado para 'vulnerabilidades'
   const tipo_trabalho = req.body.tipo_trabalho;
   const localizacao = req.body.localizacao;
-  const competencias = req.body.competencias;
 
   // Transforme a lista de vulnerabilidades em uma string separada por vírgulas
   const vulnerabilidadesString = vulnerabilidades.join(', ');
 
   // Inserir os dados da vaga no banco de dados SQLite
   db.run(
-    'INSERT INTO vagas (titulo, descricao, salario, vulnerabilidade, tipo_trabalho, localizacao, competencias) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    [titulo, descricao, salario, vulnerabilidadesString, tipo_trabalho, localizacao, competencias],
+    'INSERT INTO vagas (titulo, descricao, salario, vulnerabilidade, tipo_trabalho, localizacao) VALUES (?, ?, ?, ?, ?, ?)',
+    [titulo, descricao, salario, vulnerabilidadesString, tipo_trabalho, localizacao],
     function (err) {
       if (err) {
         return console.error(err.message);
@@ -272,6 +286,19 @@ app.post('/cadastrar-vaga', (req, res) => {
           console.log(`Vaga cadastrada com sucesso, ID: ${vagaId}`);
           console.log(`Relacionamento criado na tabela user_vagas.`);
 
+          // Agora, recupere todos os e-mails de usuários da base de dados
+          db.all('SELECT email FROM users', [], function (err, rows) {
+            if (err) {
+              return console.error(err.message);
+            }
+            
+            // Envie o e-mail de notificação para cada endereço de e-mail
+            for (const row of rows) {
+              const userEmail = row.email;
+              sendNotificationEmail(userEmail, titulo, descricao, salario, vulnerabilidadesString, tipo_trabalho, localizacao);
+            }
+          });
+
           res.redirect('/vagas-cadastradas');
         }
       );
@@ -279,7 +306,49 @@ app.post('/cadastrar-vaga', (req, res) => {
   );
 });
 
+function sendNotificationEmail(userEmail, titulo, descricao, salario, vulnerabilidades, tipo_trabalho, localizacao) {
+  const nodemailer = require('nodemailer');
+
+  // Configure o transporte de e-mail
+  const transporter = nodemailer.createTransport({
+    service: 'outlook', // Ou outro serviço de e-mail
+    auth: {
+      user: 'EverymindRecruiters@hotmail.com', // Seu e-mail
+      pass: 'Everymind2023' 
+    }
+  });
+
+  
+  const mailOptions = {
+    from: 'EverymindRecruiters@hotmail.com',
+    to: userEmail, // Use o endereço de e-mail do usuário como destinatário
+    subject: 'Nova Vaga Disponivel!! 😱😱',
+    text: `Uma nova vaga foi esta disponivel e pode te interessar.
+
+    Título: ${titulo}
+    Descrição: ${descricao}
+    Salário: ${salario}
+    Vulnerabilidades: ${vulnerabilidades}
+    Tipo de Trabalho: ${tipo_trabalho}
+    Localização: ${localizacao}`
+  };
+
+  // Envie o e-mail de notificação
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Notificação de nova vaga enviada: ' + info.response);
+    }
+  });
+  
+}
+
+
+
+
 app.get('/vagas-cadastradas', (req, res) => {
+
   db.all('SELECT * FROM vagas', (err, rows) => {
     if (err) {
       console.error(err.message);
@@ -291,13 +360,14 @@ app.get('/vagas-cadastradas', (req, res) => {
 });
 
 app.get('/vagas-disponiveis', (req, res) => {
+  const nomeUsuario = req.session.nomeUsuario;
   db.all('SELECT * FROM vagas', (err, rows) => {
     if (err) {
       console.error(err.message);
       return res.status(500).send('Erro ao buscar vagas.');
     }
 
-    res.render('vagas-disponiveis', { vagas: rows }); // Renderiza a página EJS com os dados das vagas
+    res.render('vagas-disponiveis', { vagas: rows, nomeUsuario }); // Renderiza a página EJS com os dados das vagas
   });
 });
 
@@ -314,12 +384,29 @@ app.get('/dashboard-candidato', (req, res) => {
 
 
 app.get('/dashboard-empresa', (req, res) => {
-
   // Consulta SQL para contar o número de usuários cadastrados
   const queryUsuarios = 'SELECT COUNT(*) AS totalUsuarios FROM users';
 
   // Consulta SQL para contar o número de vagas cadastradas
   const queryVagas = 'SELECT COUNT(*) AS totalVagas FROM vagas';
+
+  // Consulta SQL para obter as top 5 localidades mais comuns
+  const queryTopLocalidades = `
+    SELECT localizacao, COUNT(localizacao) AS total
+    FROM vagas
+    GROUP BY localizacao
+    ORDER BY total DESC
+    LIMIT 5
+  `;
+
+  // Consulta SQL para obter as top 5 vulnerabilidades mais comuns
+  const queryTopVulnerabilidades = `
+    SELECT vulnerabilidade, COUNT(vulnerabilidade) AS total
+    FROM vagas
+    GROUP BY vulnerabilidade
+    ORDER BY total DESC
+    LIMIT 5
+  `;
 
   db.get(queryUsuarios, (errUsuarios, rowUsuarios) => {
     if (errUsuarios) {
@@ -337,13 +424,33 @@ app.get('/dashboard-empresa', (req, res) => {
 
       const totalVagas = rowVagas.totalVagas;
 
-      // Renderizar a página dashboard-empresa.ejs com o número de usuários e vagas
-      res.render('dashboard-empresa', { totalUsuarios, totalVagas });
+      // Consultar as top 5 localidades
+      db.all(queryTopLocalidades, (errLocalidades, rowsLocalidades) => {
+        if (errLocalidades) {
+          console.error(errLocalidades.message);
+          return res.status(500).send('Erro ao buscar as top 5 localidades.');
+        }
 
-     
+        // Consultar as top 5 vulnerabilidades
+        db.all(queryTopVulnerabilidades, (errVulnerabilidades, rowsVulnerabilidades) => {
+          if (errVulnerabilidades) {
+            console.error(errVulnerabilidades.message);
+            return res.status(500).send('Erro ao buscar as top 5 vulnerabilidades.');
+          }
+
+          // Renderizar a página dashboard-empresa.ejs com os dados coletados
+          res.render('dashboard-empresa', {
+            totalUsuarios,
+            totalVagas,
+            topLocalidades: rowsLocalidades,
+            topVulnerabilidades: rowsVulnerabilidades,
+          });
+        });
+      });
     });
   });
 });
+
 
 
 db.serialize(() => {
@@ -403,13 +510,14 @@ app.post('/login', (req, res) => {
 
 // 2. Atualize a rota para processar o envio da candidatura
 app.get('/vagas-disponiveis', (req, res) => {
+  const nomeUsuario = req.session.nomeUsuario;
   db.all('SELECT * FROM vagas', (err, rows) => {
     if (err) {
       console.error(err.message);
       return res.status(500).send('Erro ao buscar vagas.');
     }
 
-    res.render('vagas-disponiveis', { vagas: rows });
+    res.render('vagas-disponiveis', { vagas: rows, nomeUsuario });
   });
 });
 
@@ -450,6 +558,7 @@ app.post('/vagas-disponiveis/:id', (req, res) => {
 });
 
 app.get('/minhas-vagas', (req, res) => {
+  const nomeUsuario = req.session.nomeUsuario;
   // Primeiro, obtenha o ID do usuário da sessão
   const userId = req.session.userId;
 
@@ -458,20 +567,20 @@ app.get('/minhas-vagas', (req, res) => {
   }
 
   // Consulte o banco de dados para recuperar as vagas às quais o usuário se candidatou
-  db.all('SELECT v.* FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id WHERE c.user_id = ?', [userId], (err, rows) => {
+  db.all('SELECT v.*, c.estado FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id WHERE c.user_id = ?', [userId], (err, rows) => {
     if (err) {
       console.error(err.message);
       return res.status(500).send('Erro ao buscar vagas.');
     }
 
-    res.render('minhas-vagas', { vagas: rows });
+    res.render('minhas-vagas', { vagas: rows, nomeUsuario });
   });
 });
 
 
 app.get('/candidatos-vagas', (req, res) => {
   // Consulte o banco de dados para recuperar informações de todas as vagas candidatas, incluindo o ID da vaga, a data da entrevista e o status_teste
-  db.all('SELECT v.id AS vagaId, v.titulo, u.nomeCompleto, u.localizacao, u.vulnerabilidade, c.estado, c.data_entrevista,c.status_teste, c.status_entrevista, v.tipo_trabalho ,u.id AS userId, c.status_teste FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id JOIN users u ON u.id = c.user_id', (err, rows) => {
+  db.all('SELECT v.id AS vagaId, v.titulo, u.nomeCompleto, u.localizacao, u.vulnerabilidade, c.estado, c.data_entrevista,c.status_teste, c.status_entrevista, c.status_feedback ,v.tipo_trabalho ,u.id AS userId, c.status_teste FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id JOIN users u ON u.id = c.user_id', (err, rows) => {
     if (err) {
       console.error(err.message);
       return res.status(500).send('Erro ao buscar informações de candidaturas.');
@@ -618,6 +727,8 @@ app.post('/enviar-feedback/:candidaturaId/:vagaId', (req, res) => {
 
 
 app.get('/testes-candidato', (req, res) => {
+
+  const nomeUsuario = req.session.nomeUsuario;
   // Primeiro, obtenha o ID do usuário da sessão
   const userId = req.session.userId;
 
@@ -631,7 +742,7 @@ app.get('/testes-candidato', (req, res) => {
       return res.status(500).send('Erro ao buscar vagas.');
     }
 
-    res.render('testes-candidato', { vagas: rows });
+    res.render('testes-candidato', { vagas: rows, nomeUsuario });
   });
 });
 
@@ -656,6 +767,7 @@ app.post('/realizar-teste/:candidaturaId/:vagaId', (req, res) => {
 
 app.get('/entrevista-candidato', (req, res) => {
   // Primeiro, obtenha o ID do usuário da sessão
+  const nomeUsuario = req.session.nomeUsuario;
   const userId = req.session.userId;
 
   if (!userId) {
@@ -668,7 +780,7 @@ app.get('/entrevista-candidato', (req, res) => {
       return res.status(500).send('Erro ao buscar vagas.');
     }
 
-    res.render('entrevista-candidato', { vagas: rows });
+    res.render('entrevista-candidato', { vagas: rows, nomeUsuario });
   });
 });
 
@@ -691,6 +803,7 @@ app.post('/confirmar-entrevista/:candidaturaId/:vagaId', (req, res) => {
 });
 
 app.get('/feedback-candidato', (req, res) => {
+  const nomeUsuario = req.session.nomeUsuario;
 
   const userId = req.session.userId;
 
@@ -704,8 +817,13 @@ app.get('/feedback-candidato', (req, res) => {
       return res.status(500).send('Erro ao buscar vagas.');
     }
 
-    res.render('feedback-candidato', { vagas: rows });
+    res.render('feedback-candidato', { vagas: rows, nomeUsuario });
   });
+});
+
+app.get('/styles/perfil.css', (req, res) => {
+  res.setHeader('Content-Type', 'text/css');
+  res.sendFile('perfil.css', { root: path.join(__dirname, 'styles') });
 });
 
 

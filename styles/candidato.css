@@ -1,13 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@700&family=Poppins:wght@400;500;600&display=swap');
 
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
     background-color: #F4F7F5;
     font-family: 'Poppins', sans-serif;
-    overflow-x: hidden; /* Impede a barra de rolagem horizontal */
+    overflow-x: hidden;
+    /* Impede a barra de rolagem horizontal */
 }
 
 #menu {
@@ -40,6 +42,14 @@ body, html {
     padding-right: 25%;
 }
 
+.menu-inner p {
+    color: white;
+    padding-left: 25px;
+    padding-bottom: 60px;
+}
+
+
+
 #blob {
     top: 0;
     z-index: -1;
@@ -59,7 +69,8 @@ body, html {
     position: absolute;
     width: 20px;
     height: 20px;
-    margin: 0 auto; /* Centraliza o ícone horizontalmente */
+    margin: 0 auto;
+    /* Centraliza o ícone horizontalmente */
 }
 
 .hamburger .line {
@@ -79,7 +90,7 @@ body, html {
 }
 
 h1 {
-    
+
     right: 0;
     margin: 0;
 }
@@ -90,7 +101,8 @@ ul {
     width: 80%;
     margin-left: 10%;
     text-align: center;
-    z-index: 1; /* Corrige a sobreposição do menu */
+    z-index: 1;
+    /* Corrige a sobreposição do menu */
 }
 
 ul li {
@@ -103,7 +115,7 @@ ul li {
 }
 
 ul li:last-child:hover {
-    background-color: #ff0000; 
+    background-color: #ff0000;
 }
 
 ul li a {
@@ -129,7 +141,8 @@ h2 {
 
 /* Ajustes para evitar conflitos de texto com o menu */
 .container {
-    text-align: center; /* Centraliza o conteúdo horizontalmente */
+    text-align: center;
+    /* Centraliza o conteúdo horizontalmente */
     position: absolute;
     top: 50%;
     left: 50%;
@@ -138,20 +151,23 @@ h2 {
 
 h1 {
     margin: 0;
-    font-size: 24px; /* Tamanho da fonte ajustado */
-    
+    font-size: 24px;
+    /* Tamanho da fonte ajustado */
+
 }
 
 p {
-    text-align: center; /* Centraliza o texto explicativo horizontalmente */
-    margin-top: 10px; /* Espaço superior para separar do título */
+    text-align: center;
+    /* Centraliza o texto explicativo horizontalmente */
+    margin-top: 10px;
+    /* Espaço superior para separar do título */
 }
 
 
-  
+
 h2 {
-    text-align: center; 
-    font-size: 28px; 
+    text-align: center;
+    font-size: 28px;
     color: black;
     padding: 3%;
 }

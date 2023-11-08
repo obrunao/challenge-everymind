@@ -123,12 +123,17 @@
                                                 <% } %>
                                                     <% } %>
                                                         <% } else if (candidatura.estado==='Feedback' ) { %>
+                                                            <p><span class="campo">Status Feedback: </span>
+                                                                <%= candidatura.status_feedback %>
+                                                                </p>
+
                                                             <button class="enviar-feedback"
                                                                 data-candidatura-id="<%= candidatura.userId %>"
                                                                 data-vaga-id="<%= candidatura.vagaId %>">Enviar
                                                                 Feedback</button>
                                                             <% } %>
                                                                 <% if (candidatura.estado !=='Feedback' ) { %>
+                                                                    
                                                                     <span>
                                                                         <button class="avancar-fase"
                                                                             data-candidatura-id="<%= candidatura.userId %>"
@@ -218,8 +223,9 @@
                     const vagaId = $(this).data('vaga-id');
 
                     $.post(`/excluir-candidato/${candidaturaId}/${vagaId}`, function (data) {
-                        location.reload();
+                        
                     });
+                    location.reload();
                 });
 
                 $('.avancar-fase').on('click', function () {
@@ -227,8 +233,9 @@
                     const vagaId = $(this).data('vaga-id');
 
                     $.post(`/avancar-fase/${candidaturaId}/${vagaId}`, function (data) {
-                        location.reload();
+                      
                     });
+                    location.reload();
                 });
 
                 $('.agendar-entrevista').on('click', function () {
@@ -236,8 +243,9 @@
                     const vagaId = $(this).data('vaga-id');
                     const dataEntrevista = $('.data-entrevista[data-candidatura-id="' + candidaturaId + '"]').val();
                     $.post(`/agendar-entrevista/${candidaturaId}/${vagaId}`, { dataEntrevista: dataEntrevista }, function (data) {
-                        location.reload(); // Atualize a página após agendar a entrevista
+                 
                     });
+                    location.reload();
                 });
 
                 $('.enviar-feedback').on('click', function () {
@@ -279,7 +287,9 @@
                             // Lidar com erros, se houver algum
                             console.error('Erro ao enviar o feedback: ' + error);
                         });
+                        location.reload();
                 });
+             
             });
 
         </script>
