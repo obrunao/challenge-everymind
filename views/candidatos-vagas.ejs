@@ -28,11 +28,12 @@
         </div>
         <div class="menu-inner">
             <ul>
+                <li><a href="/empresa-pagina-inicial">Olá, Recrutador 😜</a></li>
                 <li><a href="/cadastrar-vaga">Cadastrar Vaga</a></li>
                 <li><a href="/vagas-cadastradas">Vagas Cadastradas</a></li>
                 <li><a href="/candidatos-vagas">Candidatos</a></li>
                 <li><a href="/dashboard-empresa">Dashboard</a></li>
-                <li><a href="/login" class="Sair-link">Sair</a></li>
+                <li class="Sair-link"><a href="/login">Sair</a></li>
             </ul>
         </div>
     </div>
@@ -125,7 +126,7 @@
                                                         <% } else if (candidatura.estado==='Feedback' ) { %>
                                                             <p><span class="campo">Status Feedback: </span>
                                                                 <%= candidatura.status_feedback %>
-                                                                </p>
+                                                            </p>
 
                                                             <button class="enviar-feedback"
                                                                 data-candidatura-id="<%= candidatura.userId %>"
@@ -133,7 +134,7 @@
                                                                 Feedback</button>
                                                             <% } %>
                                                                 <% if (candidatura.estado !=='Feedback' ) { %>
-                                                                    
+
                                                                     <span>
                                                                         <button class="avancar-fase"
                                                                             data-candidatura-id="<%= candidatura.userId %>"
@@ -147,6 +148,17 @@
                                                                                     data-vaga-id="<%= candidatura.vagaId %>">Excluir
                                                                                     Candidato</button>
                                                                             </span></p>
+                        </div>
+
+                        <div class="modal" id="excluirCandidatoModal">
+                            <div class="modal-content">
+                                <span class="close" id="closeExcluirCandidatoModal">&times;</span>
+                                <h3>Excluir Candidato</h3>
+                                <textarea id="excluirCandidatoText" rows="5"
+                                    style="min-width: 300px; padding: 10px; min-height: 350px;"
+                                    placeholder="Digite o motivo da exclusão aqui"></textarea>
+                                <button id="submitExcluirCandidato">Excluir</button>
+                            </div>
                         </div>
                     </li>
                     <% }); %>
@@ -166,6 +178,24 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
         <script>
+
+            $('#closeExcluirCandidatoModal').on('click', function () {
+                $('#excluirCandidatoModal').css('display', 'none');
+            });
+            $('.excluir-candidato').on('click', function () {
+                const candidaturaId = $(this).data('candidatura-id');
+                const vagaId = $(this).data('vaga-id');
+
+                // Configure o modal de exclusão para incluir os IDs da vaga e da candidatura
+                $('#submitExcluirCandidato').data('candidatura-id', candidaturaId);
+                $('#submitExcluirCandidato').data('vaga-id', vagaId);
+
+                $('#excluirCandidatoModal').css('display', 'block');
+            });
+
+            $('#closeExcluirCandidatoModal').on('click', function () {
+                $('#excluirCandidatoModal').css('display', 'none');
+            });
             // Adicione um evento de alteração no filtro de Tipo de Trabalho
             $('#filtro-tipo-trabalho').on('change', function () {
                 var filtroTipoTrabalho = $(this).val();
@@ -217,80 +247,87 @@
                 }
             });
 
-            $(document).ready(function () {
-                $('.excluir-candidato').on('click', function () {
-                    const candidaturaId = $(this).data('candidatura-id');
-                    const vagaId = $(this).data('vaga-id');
+            $('#submitExcluirCandidato').on('click', function () {
+                // Recupere o candidaturaId e vagaId dos atributos de dados do botão #submitExcluirCandidato
+                const candidaturaId = $(this).data('candidatura-id');
+                const vagaId = $(this).data('vaga-id');
+                const excluirCandidatoText = $('#excluirCandidatoText').val();
 
-                    $.post(`/excluir-candidato/${candidaturaId}/${vagaId}`, function (data) {
-                        
+                // Faça uma solicitação POST para excluir o candidato do servidor
+                $.post(`/excluir-candidato/${candidaturaId}/${vagaId}`, { motivoExclusao: excluirCandidatoText }, function (data) {
+                    // Candidato excluído com sucesso, você pode fazer algo aqui, como atualizar a interface do usuário
+                    $('#excluirCandidatoModal').css('display', 'none'); // Feche o modal
+                    location.reload(); // Recarregue a página apenas após o sucesso da solicitação
+                })
+                    .fail(function (error) {
+                        // Lidar com erros, se houver algum
+                        console.error('Erro ao excluir o candidato: ' + error);
                     });
-                    location.reload();
-                });
-
-                $('.avancar-fase').on('click', function () {
-                    const candidaturaId = $(this).data('candidatura-id');
-                    const vagaId = $(this).data('vaga-id');
-
-                    $.post(`/avancar-fase/${candidaturaId}/${vagaId}`, function (data) {
-                      
-                    });
-                    location.reload();
-                });
-
-                $('.agendar-entrevista').on('click', function () {
-                    const candidaturaId = $(this).data('candidatura-id');
-                    const vagaId = $(this).data('vaga-id');
-                    const dataEntrevista = $('.data-entrevista[data-candidatura-id="' + candidaturaId + '"]').val();
-                    $.post(`/agendar-entrevista/${candidaturaId}/${vagaId}`, { dataEntrevista: dataEntrevista }, function (data) {
-                 
-                    });
-                    location.reload();
-                });
-
-                $('.enviar-feedback').on('click', function () {
-                    // Recupere o candidaturaId e vagaId dos atributos de dados dos botões
-                    const candidaturaId = $(this).data('candidatura-id');
-                    const vagaId = $(this).data('vaga-id');
-
-                    console.log(candidaturaId)
-                    console.log(vagaId)
-
-
-                    // Configure o modal para incluir os IDs da vaga e da candidatura
-                    $('#submitFeedback').data('candidatura-id', candidaturaId);
-                    $('#submitFeedback').data('vaga-id', vagaId);
-
-                    $('#feedbackModal').css('display', 'block');
-                });
-
-                $('#closeModal').on('click', function () {
-                    $('#feedbackModal').css('display', 'none');
-                });
-
-                $('#submitFeedback').on('click', function () {
-                    // Recupere o candidaturaId e vagaId dos atributos de dados do botão #submitFeedback
-                    const candidaturaId = $(this).data('candidatura-id');
-                    const vagaId = $(this).data('vaga-id');
-                    const feedbackText = $('#feedbackText').val();
-
-
-                    console.log(candidaturaId)
-                    console.log(vagaId)
-                    console.log(feedbackText)
-                    // Faça uma solicitação POST para enviar o feedback para o servidor
-                    $.post(`/enviar-feedback/${candidaturaId}/${vagaId}`, { feedbackText: feedbackText }, function (data) {
-                        // Feedback enviado com sucesso, você pode fazer algo aqui, como atualizar a interface do usuário
-                        $('#feedbackModal').css('display', 'none'); // Feche o modal
-                    })
-                        .fail(function (error) {
-                            // Lidar com erros, se houver algum
-                            console.error('Erro ao enviar o feedback: ' + error);
-                        });
-                        location.reload();
-                });
-             
             });
+
+
+            $('.avancar-fase').on('click', function () {
+                const candidaturaId = $(this).data('candidatura-id');
+                const vagaId = $(this).data('vaga-id');
+
+                $.post(`/avancar-fase/${candidaturaId}/${vagaId}`, function (data) {
+
+                });
+                location.reload();
+            });
+
+            $('.agendar-entrevista').on('click', function () {
+                const candidaturaId = $(this).data('candidatura-id');
+                const vagaId = $(this).data('vaga-id');
+                const dataEntrevista = $('.data-entrevista[data-candidatura-id="' + candidaturaId + '"]').val();
+                $.post(`/agendar-entrevista/${candidaturaId}/${vagaId}`, { dataEntrevista: dataEntrevista }, function (data) {
+
+                });
+                location.reload();
+            });
+
+            $('.enviar-feedback').on('click', function () {
+                // Recupere o candidaturaId e vagaId dos atributos de dados dos botões
+                const candidaturaId = $(this).data('candidatura-id');
+                const vagaId = $(this).data('vaga-id');
+
+                console.log(candidaturaId)
+                console.log(vagaId)
+
+
+                // Configure o modal para incluir os IDs da vaga e da candidatura
+                $('#submitFeedback').data('candidatura-id', candidaturaId);
+                $('#submitFeedback').data('vaga-id', vagaId);
+
+                $('#feedbackModal').css('display', 'block');
+            });
+
+            $('#closeModal').on('click', function () {
+                $('#feedbackModal').css('display', 'none');
+            });
+
+            $('#submitFeedback').on('click', function () {
+                // Recupere o candidaturaId e vagaId dos atributos de dados do botão #submitFeedback
+                const candidaturaId = $(this).data('candidatura-id');
+                const vagaId = $(this).data('vaga-id');
+                const feedbackText = $('#feedbackText').val();
+
+
+                console.log(candidaturaId)
+                console.log(vagaId)
+                console.log(feedbackText)
+                // Faça uma solicitação POST para enviar o feedback para o servidor
+                $.post(`/enviar-feedback/${candidaturaId}/${vagaId}`, { feedbackText: feedbackText }, function (data) {
+                    // Feedback enviado com sucesso, você pode fazer algo aqui, como atualizar a interface do usuário
+                    $('#feedbackModal').css('display', 'none'); // Feche o modal
+                })
+                    .fail(function (error) {
+                        // Lidar com erros, se houver algum
+                        console.error('Erro ao enviar o feedback: ' + error);
+                    });
+                location.reload();
+            });
+
 
         </script>
 </body>

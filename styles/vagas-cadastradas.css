@@ -243,3 +243,7 @@ ul li.Sair-item:hover {
     font-size: 16px;
     cursor: pointer;
 }
+ p .recrutador{
+    color: white;
+    text-decoration-color: white;
+}

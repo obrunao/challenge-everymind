@@ -258,7 +258,7 @@ app.post('/cadastrar-vaga', (req, res) => {
   const titulo = req.body.titulo;
   const descricao = req.body.descricao;
   const salario = req.body.salario;
-  const vulnerabilidades = req.body.vulnerabilidade; // Renomeado para 'vulnerabilidades'
+  const vulnerabilidades = Array.isArray(req.body.vulnerabilidade) ? req.body.vulnerabilidade : [req.body.vulnerabilidade];
   const tipo_trabalho = req.body.tipo_trabalho;
   const localizacao = req.body.localizacao;
 
@@ -649,7 +649,24 @@ app.post('/excluir-candidato/:candidaturaId/:vagaId', (req, res) => {
           res.status(500).send('Erro ao excluir o candidato.');
         } else {
           console.log(`Candidato com ID ${candidaturaId} associado à vaga com ID ${vagaId} excluído com sucesso.`);
-          res.status(200).send('Candidato excluído com sucesso.');
+
+          // Atualizar o estado para "feedback" e salvar o texto da exclusão no campo "status_feedback"
+          const estadoFeedback = 'feedback';
+          const statusFeedbackText = req.body.motivoExclusao || ''; // Supondo que o motivoExclusao seja enviado no corpo da solicitação
+
+          db.run(
+            'UPDATE candidaturas SET estado = ?, status_feedback = ? WHERE user_id = ? AND vaga_id = ?',
+            [estadoFeedback, statusFeedbackText, candidaturaId, vagaId],
+            (err) => {
+              if (err) {
+                console.error(err.message);
+                res.status(500).send('Erro ao atualizar o estado e salvar o texto de feedback.');
+              } else {
+                console.log(`Estado atualizado para "feedback" e texto de feedback salvo com sucesso.`);
+                res.status(200).send('Candidato excluído com sucesso.');
+              }
+            }
+          );
         }
       });
     } else {
