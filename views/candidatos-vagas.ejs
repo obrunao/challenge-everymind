@@ -69,20 +69,24 @@
                         data-tipo-trabalho="<%= candidatura.tipo_trabalho %>">
                         <img src="https://i.ibb.co/mR9Cyq3/Logo-Sem-Fundo.png" alt="Ícone da Vaga"
                             style="width: 50px; height: 50px;">
-                        <h3>
+                        <h3 style="color: #5f4def;">
                             <%= candidatura.titulo %>
                         </h3>
+                      
                         <div class="vaga-info">
-                            <p><span class="campo">Nome: </span>
+                            <p><span class="campo">Descrição da Vaga: </span>
+                                <%= candidatura.descricao %>
+                            </p>
+                            <p><span class="campo">Nome do Candidato: </span>
                                 <%= candidatura.nomeCompleto %>
                             </p>
-                            <p><span class="campo">Localização: </span>
+                            <p><span class="campo">Localização do Candidato: </span>
                                 <%= candidatura.localizacao %>
                             </p>
-                            <p><span class="campo">Vulnerabilidade: </span>
+                            <p><span class="campo">Vulnerabilidade(s) do Candidato: </span>
                                 <%= candidatura.vulnerabilidade %>
                             </p>
-                            <p><span class="campo">Fase: </span>
+                            <p><span class="campo">Fase do Candidato: </span>
                                 <%= candidatura.estado %>
                             </p>
 

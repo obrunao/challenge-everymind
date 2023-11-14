@@ -28,14 +28,13 @@
         </div>
         <div class="menu-inner">
             <ul>
-                <p>Olá, <%= nomeUsuario %> 😜</p>
+                <li><a href="/candidato-pagina-inicial">Olá, <%= nomeUsuario %> 😜</a></li>
                 <li><a href="/perfil">Perfil</a></li>
                 <li><a href="/vagas-disponiveis">Vagas Disponíveis</a></li>
                 <li><a href="/minhas-vagas">Minhas Vagas</a></li>
                 <li><a href="/testes-candidato">Testes</a></li>
                 <li><a href="/entrevista-candidato">Entrevistas</a></li>
                 <li><a href="/feedback-candidato">Devolutivas</a></li>
-                <li><a href="/dashboard-candidato">Dashboard</a></li>
                 <li class="Sair-link"><a href="/login">Sair</a></li>
             </ul>
         </div>
@@ -71,12 +70,7 @@
                                     <p><span class="campo">Localização: </span>
                                         <%= vaga.localizacao %>
                                     </p>
-                                    <p><span class="campo">vagaID: </span>
-                                        <%= vaga.id %>
-                                    </p>
-                                    <p><span class="campo">candidaturaId: </span>
-                                        <%= vaga.candidaturaId %>
-                                    </p>
+                                   
                                 </div>
                                 <form method="post" action="/realizar-teste/<%= vaga.candidaturaId %>/<%= vaga.id %>">
                                     <button type="button" class="teste-button" onclick="realizarTeste('<%= vaga.candidaturaId %>', '<%= vaga.id %>')">Realizar Teste</button>

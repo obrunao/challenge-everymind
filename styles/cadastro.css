@@ -192,3 +192,23 @@ input[type="submit"]:hover {
   border-bottom: 2px solid #ff0000;
 }
 
+#tipocadastro:focus {
+  border-bottom: 2px solid #2691d9;
+}
+
+#tipocadastro:valid {
+  border-bottom: 2px solid #2691d9;
+}
+
+#tipocadastro:invalid {
+  border-bottom: 2px solid #ff0000;
+}
+.tipocadastro-label {
+  position: absolute;
+  top: -25px;
+  left: 5px;
+  color: #adadad;
+  font-size: 16px;
+  pointer-events: none;
+  transition: .5s;
+}

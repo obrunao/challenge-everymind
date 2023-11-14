@@ -10,9 +10,9 @@ const sqlite3 = require('sqlite3').verbose();
 const port = process.env.PORT || 3000;
 
 app.use(express.static(path.join(__dirname, 'styles')));
-const db = new sqlite3.Database('database.sqlite');
+const db = new sqlite3.Database('database.sqlite'); -
 
-app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(session({
@@ -201,13 +201,13 @@ app.get('/perfil', (req, res) => {
     if (err) {
       return res.status(500).send('Erro ao buscar dados do usuário.');
     }
-    
+
     if (!row) {
       return res.status(404).send('Usuário não encontrado.');
     }
-    
+
     const { nomeCompleto, telefone, cpf, localizacao, vulnerabilidade, email } = row;
-    
+
     res.render('perfil', { nomeCompleto, telefone, cpf, localizacao, vulnerabilidade, email });
   });
 });
@@ -291,7 +291,7 @@ app.post('/cadastrar-vaga', (req, res) => {
             if (err) {
               return console.error(err.message);
             }
-            
+
             // Envie o e-mail de notificação para cada endereço de e-mail
             for (const row of rows) {
               const userEmail = row.email;
@@ -314,11 +314,11 @@ function sendNotificationEmail(userEmail, titulo, descricao, salario, vulnerabil
     service: 'outlook', // Ou outro serviço de e-mail
     auth: {
       user: 'EverymindRecruiters@hotmail.com', // Seu e-mail
-      pass: 'Everymind2023' 
+      pass: 'Everymind2023'
     }
   });
 
-  
+
   const mailOptions = {
     from: 'EverymindRecruiters@hotmail.com',
     to: userEmail, // Use o endereço de e-mail do usuário como destinatário
@@ -341,7 +341,7 @@ function sendNotificationEmail(userEmail, titulo, descricao, salario, vulnerabil
       console.log('Notificação de nova vaga enviada: ' + info.response);
     }
   });
-  
+
 }
 
 
@@ -580,7 +580,7 @@ app.get('/minhas-vagas', (req, res) => {
 
 app.get('/candidatos-vagas', (req, res) => {
   // Consulte o banco de dados para recuperar informações de todas as vagas candidatas, incluindo o ID da vaga, a data da entrevista e o status_teste
-  db.all('SELECT v.id AS vagaId, v.titulo, u.nomeCompleto, u.localizacao, u.vulnerabilidade, c.estado, c.data_entrevista,c.status_teste, c.status_entrevista, c.status_feedback ,v.tipo_trabalho ,u.id AS userId, c.status_teste FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id JOIN users u ON u.id = c.user_id', (err, rows) => {
+  db.all('SELECT v.id AS vagaId, v.titulo, v.descricao, v.salario, v.tipo_trabalho, v.localizacao ,u.nomeCompleto, u.localizacao, u.vulnerabilidade, c.estado, c.data_entrevista,c.status_teste, c.status_entrevista, c.status_feedback ,v.tipo_trabalho ,u.id AS userId, c.status_teste FROM vagas v JOIN candidaturas c ON v.id = c.vaga_id JOIN users u ON u.id = c.user_id', (err, rows) => {
     if (err) {
       console.error(err.message);
       return res.status(500).send('Erro ao buscar informações de candidaturas.');

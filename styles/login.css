@@ -140,7 +140,7 @@ input[type="submit"]:hover {
   text-align: center;
   color: black; /* Cor do texto */
   font-weight: bold; /* Texto em negrito */
-  opacity: 70%;
+  opacity: 60%;
 }
 
 .pass a:link {
